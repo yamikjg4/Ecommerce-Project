@@ -1,0 +1,177 @@
+﻿@model IEnumerable<E_Commerce.Models.ApplicationUser>
+@{
+    ViewData["Title"] = "viewuser";
+    Layout = "~/Areas/Admin/Views/Shared/_Admin.cshtml";
+    int intSno = 0;
+    //Search code
+
+
+    //pagination code
+    PagenatedList pager = new PagenatedList();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+@*<link href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" rel="stylesheet">*@
+<div class="content-wrapper" style="width:auto">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    @*<h1 class="m-0">View Category</h1>*@
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">View Category</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+
+
+
+    <div class="card  w-75 mx-auto">
+        <div class="card-header text-center">
+            <h3>View User</h3>
+        </div>
+        <div class="card-body w-auto">
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Fullname
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.UserName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PhoneNumber)
+                        </th>
+
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.fname)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            </td>
+
+                            <td>
+                                <form asp-area="Admin" asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@item.Id" method="post">
+
+
+                                    <button type="submit" class="btn btn-link border-0 d-inline" onclick="return functionConfirm(this)">
+                                        <span class="text-danger">
+                                            <i class="fa fa-trash"></i>
+                                        </span>
+                                    </button>
+
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="container">
+                @if (pager.TotalPages > 0)
+                {
+                    <ul class="pagination justify-content-start">
+
+                        @if (pager.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="1">First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage-1)">Previous</a>
+                            </li>
+                        }
+
+
+                        @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                        {
+                            <li class="page-item @(pge==pager.CurrentPage?"active":"")">
+                                <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@pge">@pge</a>
+                            </li>
+                        }
+
+                        @if (pager.CurrentPage < pager.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage+1)">Next</a>
+                            </li>
+                            <li>
+                                <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@(pager.TotalPages)">Last</a>
+                            </li>
+
+                        }
+
+
+                    </ul>
+                }
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+</div>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+@if (ViewBag.Message != null)
+{
+    <script>
+    swal(@ViewBag.Message, "You clicked the button!", "fail");
+    </script>
+}
+
+<script type="text/javascript">
+    function functionConfirm(event) {
+        console.log('click');
+
+        swal({
+            title: "Are You Sure Delete User?",
+            text: "You will not be able to recover this User",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $('form').submit();
+                    return true;
+                    swal("Product Deleted Succesfully", {
+                        icon: "success",
+                    });
+                } else {
+                    swal("Delete Process Cancell!");
+                    return false;
+                }
+            });
+        return false;
+    }
+</script>

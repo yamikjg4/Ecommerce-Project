@@ -1,0 +1,104 @@
+﻿@model E_Commerce.Models.ProductsModel
+
+@{
+    ViewData["Title"] = "AddProduct";
+    Layout = "~/Areas/Admin/Views/Shared/_Admin.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Add Product</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Add Category</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row d-flex justify-content-center">
+                <!--Add category code-->
+                <div class="col-md-4">
+                    <form asp-action="AddProduct" asp-controller="Admin" asp-area="Admin" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="cat_id" class="control-label"></label>
+                            <select class="form-control" asp-for="cat_id" asp-items="ViewBag.list">
+                                <option value="">Select Category</option>
+                            </select>
+                            @*  @Html.DropDownListFor(x=>x.cat_id,new SelectList(ViewBag.list, "cat_id", "category_name"),"Select Category",htmlAttributes:new{ @class="form-control"})*@
+
+                            @*<input asp-for="cat_id" class="form-control" />*@
+                            <span asp-validation-for="cat_id" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Product_name" class="control-label"></label>
+                            <input asp-for="Product_name" class="form-control" />
+                            <span asp-validation-for="Product_name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="product_price" class="control-label"></label>
+                            <input type="number" asp-for="product_price" class="form-control" />
+                            <span asp-validation-for="product_price" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="product_desc" class="control-label"></label>
+                            @*              <input asp-for="product_desc" class="form-control"  />*@
+                            <textarea asp-for="product_desc" class="form-control" style="display: block; overflow: hidden; resize: none;" id="autoresizing"></textarea>
+                            <span asp-validation-for="product_desc" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="product_qty" class="control-label"></label>
+                            <input asp-for="product_qty" class="form-control" />
+                            <span asp-validation-for="product_qty" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageFile" class="control-label"></label>
+                            <input asp-for="ImageFile" class="form-control" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Create" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <!-- ./col -->
+        </div>
+        <!-- /.row -->
+        <!-- Main row -->
+        <!-- /.row (main row) -->
+</div><!-- /.container-fluid -->
+    </section>
+<!-- /.content -->
+    </div>
+
+<script>
+    textarea = document.querySelector("#autoresizing");
+    textarea.addEventListener('input', autoResize, false);
+
+    function autoResize() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+</script>
+
+@if (@ViewBag.alertmesaage != null && @ViewBag.status != null)
+{
+    <script>
+
+    swal("@ViewBag.alertmesaage ", "You clicked Ok Button!", "@(ViewBag.status ? "success" : "error")");
+    </script>
+}

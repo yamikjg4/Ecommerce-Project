@@ -1,0 +1,70 @@
+﻿@model E_Commerce.Models.singupmodel
+
+@{
+    ViewData["Title"] = "singup";
+    Layout = "~/Views/Shared/_login.cshtml";
+}
+
+<div class="forms-container1">
+    <div class="signin-signup">
+        <form asp-action="singup" class="sign-in-form">
+            <h2 class="title">Sign up</h2>
+            <div asp-validation-summary="ModelOnly" style="color:red;"></div>
+            <div class="input-field">
+                <i class="fas fa-user"></i>
+                <input asp-for="Name" class="form-control" placeholder="Name" />
+                <br />
+                <span asp-validation-for="Name" style="color:red;"></span>
+            </div>
+            <div class="input-field">
+                <i class="fas fa-envelope"></i>
+                <input asp-for="email" class="form-control" placeholder="Email" />
+                <br />
+                <span asp-validation-for="email" style="color:red;"></span>
+            </div>
+            <div class="input-field">
+                <i class="fa fa-phone"></i>
+                <input asp-for="Phone" class="form-control" placeholder="Mobile no" />
+                <br />
+                <span asp-validation-for="Phone" style="color:red;"></span>
+            </div>
+            <div class="input-field">
+                <i class="fas fa-lock"></i>
+                <input asp-for="Password" class="form-control" placeholder="Password" />
+                <br />
+                <span asp-validation-for="Password" style="color:red;"></span>
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="Sing Up" class="btn solid" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="panels-container">
+    <div class="panel left-panel">
+        <div class="content">
+            <h3>One of us ?</h3>
+            <p>
+                Already Account Avalible Login Here.
+            </p>
+            <button class="btn transparent" id="sign-in">
+                Sign in
+            </button>
+        </div>
+        <img src="~/Image/register.svg" class="image" alt="" />
+    </div>
+</div>
+
+@*<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>*@
+
+
+
+@if (@ViewBag.alertmesaage != null && @ViewBag.status != null)
+{
+    <script>
+
+    swal("@ViewBag.alertmesaage ", "You clicked Ok Button!", "@(ViewBag.status?"success":"error")");
+    </script>
+}
