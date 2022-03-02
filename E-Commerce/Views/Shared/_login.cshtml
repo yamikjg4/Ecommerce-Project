@@ -14,10 +14,15 @@
     <title>@ViewData["Title"]</title>
 </head>
 
-<body>
+<body id="dis">
     <div class="container">
         @RenderBody()
     </div>
-    
+
+    <script type="text/javascript">
+        function preventBack() { window.history.forward(); }
+        setTimeout("preventBack()",0);
+        window.onunload = function () { null };
+    </script>
 </body>
 </html>

@@ -144,6 +144,50 @@ namespace E_Commerce.Migrations
                     b.ToTable("tblproduct");
                 });
 
+            modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
+                {
+                    b.Property<int>("ad_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("pincode")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<string>("userId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ad_id");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("tblAddresses");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -282,6 +326,15 @@ namespace E_Commerce.Migrations
                         .HasForeignKey("categorycat_id");
 
                     b.Navigation("category");
+                });
+
+            modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
+                {
+                    b.HasOne("E_Commerce.Models.ApplicationUser", "user")
+                        .WithMany()
+                        .HasForeignKey("userId");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

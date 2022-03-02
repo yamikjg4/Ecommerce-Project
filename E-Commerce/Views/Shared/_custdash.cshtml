@@ -73,15 +73,19 @@
                             <a class="nav-link dropdown-toggle text-light font-weight-bold btn btn-success btn-sm" href="#" id="dropdownId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@User.FindFirst("UserFirstName").Value</a>
                             <div class="dropdown-menu bg-dark" aria-labelledby="dropdownId">
                                 <a class="dropdown-item text-light font-weight-bold" id="a_id">Logout</a>
-                                <a class="dropdown-item text-light font-weight-bold" href="#">Action 2</a>
+                                <a class="dropdown-item text-light font-weight-bold" asp-action="EditProfile" asp-controller="Home" asp-route-id="@TempData["getid"]">My Profile</a>
                             </div>
                         </li>
                     }
 
-                    else if (User.IsInRole("Admin"))
+                    else
                     {
+                        <li class="nav-item mx-md-auto">
 
-                        <a class="nav-link text-light" asp-area="Admin" asp-controller="Admin" asp-action="Index" id="link" ><i class="fa fa-users">Admin-Dashboard</i></a>
+                            <a class="nav-link text-light" asp-action="login" asp-controller="Account" asp-route-returnUrl="@Context.Request.Path" id="link"><i class="fa fa-users">Login</i></a>
+
+                        </li>
+
                     }
 
                 }
@@ -98,7 +102,7 @@
 
                     <li class="nav-item mx-md-auto">
 
-                        <a class="nav-link text-light" asp-action="login" asp-controller="Account" id="link"><i class="fa fa-users">Login</i></a>
+                        <a class="nav-link text-light" asp-action="login" asp-controller="Account" asp-route-returnUrl="@Context.Request.Path" id="link"><i class="fa fa-users">Login</i></a>
 
                     </li>
                 }
@@ -309,3 +313,6 @@
     </script>
 </body>
 </html>
+@{
+    TempData.Keep("getid");
+ }

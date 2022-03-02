@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce.Migrations
 {
     [DbContext(typeof(Eshopcontext))]
-    [Migration("20220224065559_newchanged")]
-    partial class newchanged
+    [Migration("20220301061638_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -120,8 +120,10 @@ namespace E_Commerce.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("cat_id")
-                        .IsRequired()
+                    b.Property<int>("cat_id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("categorycat_id")
                         .HasColumnType("int");
 
                     b.Property<string>("product_desc")
@@ -139,7 +141,53 @@ namespace E_Commerce.Migrations
 
                     b.HasKey("product_id");
 
+                    b.HasIndex("categorycat_id");
+
                     b.ToTable("tblproduct");
+                });
+
+            modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
+                {
+                    b.Property<int>("ad_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("pincode")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<string>("userId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ad_id");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("tblAddresses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -271,6 +319,24 @@ namespace E_Commerce.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("E_Commerce.Models.Product", b =>
+                {
+                    b.HasOne("E_Commerce.Models.Category", "category")
+                        .WithMany()
+                        .HasForeignKey("categorycat_id");
+
+                    b.Navigation("category");
+                });
+
+            modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
+                {
+                    b.HasOne("E_Commerce.Models.ApplicationUser", "user")
+                        .WithMany()
+                        .HasForeignKey("userId");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

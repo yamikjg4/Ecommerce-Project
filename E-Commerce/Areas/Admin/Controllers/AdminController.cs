@@ -1,17 +1,17 @@
+using E_Commerce.Models;
+using E_Commerce.repositry;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using E_Commerce.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Http;
-using E_Commerce.repositry;
-using Microsoft.AspNetCore.Identity;
 
 namespace E_Commerce.Areas.Admin.Controllers
 {
@@ -104,10 +104,10 @@ namespace E_Commerce.Areas.Admin.Controllers
         {
             List<Category> categories = _db.tblcategory.ToList();
             List<Product> products = _db.tblproduct.ToList();
-           /* List<Category_Product> cat;*/
+            /* List<Category_Product> cat;*/
             var product = from e1 in categories
                           join e2 in products on e1.cat_id equals e2.cat_id into tabel1
-                          from e2 in tabel1.ToList()
+                          from e2 in tabel1.ToList().OrderBy(x => x.product_id)
                           select new Category_Product
                           {
                               categories = e1,
@@ -119,7 +119,7 @@ namespace E_Commerce.Areas.Admin.Controllers
             if (pagenumber < 1)
 
                 pagenumber = 1;
-            int reccount =product.Count();
+            int reccount = product.Count();
             var pager = new PagenatedList(reccount, pagenumber, pagesize);
             var recskip = (pagenumber - 1) * pagesize;
             var data = product.Skip(recskip).Take(pager.PageSize).ToList();
@@ -142,7 +142,7 @@ namespace E_Commerce.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-               
+
                 var check = _db.tblcategory.Where(x => x.category_name == obj.category_name);
                 if (check.Count() == 0)
                 {
@@ -153,10 +153,10 @@ namespace E_Commerce.Areas.Admin.Controllers
 
                     return RedirectToAction("ViewCategory", "Admin", new { area = "Admin" });
                 }
-               /* if (obj.cat_id > 0) {*/
-                 }
+                /* if (obj.cat_id > 0) {*/
+            }
 
-    /*        }*/
+            /*        }*/
             ViewBag.status = false;
             ViewBag.alertmesaage = "Category Inserted Fail";
             return View();
@@ -312,7 +312,8 @@ namespace E_Commerce.Areas.Admin.Controllers
                 return NotFound();
 
             _db.tblcategory.Remove(CategoryInDB);
-            foreach (var item in del) {
+            foreach (var item in del)
+            {
                 _db.tblproduct.Remove(item);
             }
             await _db.SaveChangesAsync();
@@ -325,6 +326,7 @@ namespace E_Commerce.Areas.Admin.Controllers
         [Route("AddUser")]
         public IActionResult AddUser()
         {
+
             return View();
         }
 
@@ -378,7 +380,8 @@ namespace E_Commerce.Areas.Admin.Controllers
             if (res != null)
             {
                 var resp = await _usermanager.DeleteAsync(res);
-                if (resp.Succeeded) {
+                if (resp.Succeeded)
+                {
                     return RedirectToAction("ViewUser", "Admin", new { area = "Admin" });
                 }
 
@@ -393,7 +396,7 @@ namespace E_Commerce.Areas.Admin.Controllers
             return RedirectToAction("ViewUser", "Admin", new { area = "Admin" });
         }
 
-    
+
 
         [Route("EditProfile")]
         public async Task<IActionResult> EditProfile(string id)
@@ -411,7 +414,7 @@ namespace E_Commerce.Areas.Admin.Controllers
         }
         [Route("EditProfile")]
         [HttpPost]
-        public async Task<IActionResult> EditProfile(string id, string UserName, string fname,string PhoneNumber)
+        public async Task<IActionResult> EditProfile(string id, string UserName, string fname, string PhoneNumber)
         {
             ApplicationUser user = await _usermanager.FindByIdAsync(id.Trim());
             if (user != null)
@@ -448,7 +451,7 @@ namespace E_Commerce.Areas.Admin.Controllers
                         ViewBag.status = true;
                         ViewBag.alertmesaage = "Update Succesfully";
                         await _accountrepostry.logoutsync();
-                        return RedirectToAction("login","Account");
+                        return RedirectToAction("login", "Account");
                     }
                     else
                     {
@@ -470,10 +473,10 @@ namespace E_Commerce.Areas.Admin.Controllers
         }
 
         [Route("logout")]
-       public IActionResult logout()
+        public IActionResult logout()
         {
             _accountrepostry.logoutsync();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
     }

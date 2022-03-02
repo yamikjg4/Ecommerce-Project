@@ -1,9 +1,7 @@
 ﻿using E_Commerce.Models;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -79,7 +77,7 @@ namespace E_Commerce.services
 
             await smtpClient.SendMailAsync(mail);
         }
-      
+
         private string GetEmailBody(string templateName)
         {
             var body = File.ReadAllText(string.Format(templatePath, templateName));

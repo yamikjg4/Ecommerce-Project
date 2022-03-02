@@ -3,9 +3,6 @@ using E_Commerce.repositry;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace E_Commerce.Controllers
@@ -37,26 +34,26 @@ namespace E_Commerce.Controllers
                 var result = await _accountRepository.createuserAsync(singup);
                 if (!result.Succeeded)
                 {
-                   
+
 
                     foreach (var errorMessage in result.Errors)
                     {
                         ModelState.AddModelError("", errorMessage.Description);
-                       
+
                     }
                     ViewBag.status = false;
                     ViewBag.alertmesaage = "Account Creation Fail";
                     return View(singup);
-                  
+
                 }
                 else
                 {
                     ViewBag.status = true;
                     ViewBag.alertmesaage = "Account Created Successfully";
                 }
-               
+
                 ModelState.Clear();
-                return RedirectToAction("ConfirmEmails", new { email = singup.email});
+                return RedirectToAction("ConfirmEmails", new { email = singup.email });
             }
             else
             {
@@ -74,13 +71,17 @@ namespace E_Commerce.Controllers
         }
         [Route("Account/Login")]
         [HttpPost]
-        public async Task<IActionResult> login(singinmodel signInModel, string returnUrl = null)
+        public async Task<IActionResult> login(singinmodel signInModel, string returnUrl)
         {
             if (ModelState.IsValid)
             {
                 var result = await _accountRepository.PasswordSignInAsync(signInModel);
                 if (result.Succeeded)
                 {
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        return LocalRedirect(returnUrl);
+                    }
                     ViewBag.status = true;
                     ViewBag.alertmesaage = "Account Login Successfully";
 
@@ -111,8 +112,8 @@ namespace E_Commerce.Controllers
                     ViewBag.status = false;
                     ViewBag.alertmesaage = "Login Fail";
                 }
-                
-                     
+
+
             }
 
             ViewBag.status = false;
@@ -123,7 +124,7 @@ namespace E_Commerce.Controllers
         public async Task<ActionResult> logout()
         {
             await _accountRepository.logoutsync();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmails(string uid, string token, string email)
@@ -189,12 +190,12 @@ namespace E_Commerce.Controllers
             return View(forgot);
         }
         [AllowAnonymous, HttpGet("Reset-password")]
-        public IActionResult ResetPassword(string uid,string token)
+        public IActionResult ResetPassword(string uid, string token)
         {
             ResetPasswordModel reset = new ResetPasswordModel
             {
                 Token = token,
-                UserId=uid
+                UserId = uid
             };
             return View();
         }
@@ -204,7 +205,7 @@ namespace E_Commerce.Controllers
         {
             if (ModelState.IsValid)
             {
-                reset.Token = reset.Token.Replace(' ','+');
+                reset.Token = reset.Token.Replace(' ', '+');
                 var res = await _accountRepository.ResetPasswordAsync(reset);
                 if (res.Succeeded)
                 {

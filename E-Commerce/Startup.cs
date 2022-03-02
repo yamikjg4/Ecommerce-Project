@@ -4,16 +4,12 @@ using E_Commerce.repositry;
 using E_Commerce.services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace E_Commerce
 {
@@ -36,9 +32,9 @@ namespace E_Commerce
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddScoped<IAccountrepostry, Accountrepostry>();
             services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationClaimsPrincipalFactory>();
-            services.AddScoped<Isendmail,sendmail>();
+            services.AddScoped<Isendmail, sendmail>();
             services.AddScoped<IProductRepositry, ProductRepositry>();
-            
+
             services.Configure<IdentityOptions>(option =>
             {
                 option.Password.RequiredLength = 9;
@@ -57,7 +53,7 @@ namespace E_Commerce
                 config.AccessDeniedPath = "/Account/AccessDenied";
             }
             );
-           
+
         }
 
 
@@ -89,7 +85,7 @@ namespace E_Commerce
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapAreaControllerRoute(
                   name: "MyArea",
-                  areaName:"Admin",
+                  areaName: "Admin",
                   pattern: "Admin/{controller=Admin}/{action=Index}/{id?}");
             });
         }

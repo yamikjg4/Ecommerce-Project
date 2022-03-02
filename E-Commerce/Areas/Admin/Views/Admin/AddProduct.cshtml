@@ -64,10 +64,13 @@
                             <span asp-validation-for="product_qty" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="ImageFile" class="control-label"></label>
-                            <input asp-for="ImageFile" class="form-control" />
+                            <label asp-for="ImageFile" class="control-label" ></label>
+                            <input asp-for="ImageFile" class="form-control" id="image-input" accept="image/*" />
                             <span asp-validation-for="ImageFile" class="text-danger"></span>
                         </div>
+                       <div>
+                           <img id="preview-img" style="max-height:175px;"/>
+                       </div>
                         <div class="form-group">
                             <input type="submit" value="Create" class="btn btn-primary" />
                         </div>
@@ -85,7 +88,18 @@
     </section>
 <!-- /.content -->
     </div>
-
+<script>
+    var per = document.getElementById("preview-img");
+    var image = document.getElementById("image-input");
+    image.addEventListener("change", function (event) {
+        if (event.target.files.length == 0) {
+            return;
+        }
+        var tempurl = URL.createObjectURL(event.target.files[0]);
+        per.setAttribute("src", tempurl);
+    });
+  
+</script>
 <script>
     textarea = document.querySelector("#autoresizing");
     textarea.addEventListener('input', autoResize, false);

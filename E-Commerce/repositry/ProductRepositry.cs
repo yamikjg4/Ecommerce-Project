@@ -1,5 +1,4 @@
 ﻿using E_Commerce.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,15 +14,15 @@ namespace E_Commerce.repositry
         }
         public ICollection<Product> getdata()
         {
-            return  _context.tblproduct.ToList();
+            return _context.tblproduct.ToList();
         }
-        public async Task <Product> getdetail(int id)
+        public async Task<Product> getdetail(int id)
         {
-         
-            var result = await _context.tblproduct.FindAsync(id);
-            
 
-            return result ;
+            var result = await _context.tblproduct.FindAsync(id);
+
+
+            return result;
         }
     }
 }

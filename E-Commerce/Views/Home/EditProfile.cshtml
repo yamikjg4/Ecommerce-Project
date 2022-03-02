@@ -1,0 +1,40 @@
+﻿@model E_Commerce.Models.ApplicationUser
+@{
+    ViewData["Title"] = "EditProfile";
+   @* Layout = "~/Views/Shared/_custdash.cshtml";*@
+    Layout = "~/Views/Shared/_EditProfile.cshtml";
+}
+<div class="card h-100">
+    <div class="card-body">
+        <form asp-action="EditProfile" asp-controller="Home" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+
+                <label asp-for="fname" class="control-label"></label>
+                <input asp-for="fname" class="form-control" placeholder="Full Name" />
+                <span asp-validation-for="fname" style="color:red;"></span>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" placeholder="Email" disabled />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input type="number" asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                    <label asp-for="PasswordHash" class="control-label"></label>
+                    <input asp-for="PasswordHash" class="form-control" placeholder="Password" />
+                    <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                </div>*@
+            <div class="form-group py-3">
+                <input type="submit" value="Save Changes" class="btn btn-primary" onclick="return functionConfirm(this)" />
+            </div>
+        </form>
+
+    </div>
+    </div>

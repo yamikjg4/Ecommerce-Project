@@ -17,6 +17,6 @@ namespace E_Commerce.repositry
         Task<IdentityResult> ResetPasswordAsync(ResetPasswordModel model);
         Task<ApplicationUser> getuser(singinmodel singinmodel);
         ICollection<ApplicationUser> alluser();
-       /* bool deleteuser(string id);*/
+        /* bool deleteuser(string id);*/
     }
 }

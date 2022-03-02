@@ -66,8 +66,9 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="ImageFile" class="control-label"></label>
-                            <img src="~/Products/@ViewBag.Image" width="75px" height="65px" />
-                            <input type="file" asp-for="ImageFile" class="form-control" />
+                            <img src="~/Products/@ViewBag.Image" width="75px" height="65px" id="previews" />
+                            <img id="preview-img" style="width:75px;" />
+                            <input type="file" asp-for="ImageFile" class="form-control" id="image-input" accept="image/*"/>
                             @*   <span asp-validation-for="ImageFile" class="text-danger"></span>*@
                         </div>
                         <div class="form-group">
@@ -89,7 +90,20 @@
     </div>
 
 
+<script>
+    var per = document.getElementById("preview-img");
+  
+    var image = document.getElementById("image-input");
+    image.addEventListener("change", function (event) {
+        if (event.target.files.length == 0) {
+            return;
+        }
+        document.getElementById("previews").style.display="none";
+        var tempurl = URL.createObjectURL(event.target.files[0]);
+        per.setAttribute("src", tempurl);
+    });
 
+</script>
 @*<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>*@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 

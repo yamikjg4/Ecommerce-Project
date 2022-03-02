@@ -2,7 +2,6 @@
 using E_Commerce.services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,8 +15,8 @@ namespace E_Commerce.repositry
         private readonly Isendmail _emailService;
         private readonly IConfiguration _configuration;
         private readonly RoleManager<IdentityRole> _rolemanager;
-        
-        
+
+
         public Accountrepostry(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, Isendmail emailService,
             IConfiguration configuration, RoleManager<IdentityRole> rolemanager)
@@ -30,13 +29,13 @@ namespace E_Commerce.repositry
         }
         public ICollection<ApplicationUser> alluser()
         {
-            return _usermanager.Users.Where(x=>x.UserName!="yamikgandhi@gmail.com").ToList();
+            return _usermanager.Users.Where(x => x.UserName != "yamikgandhi@gmail.com").ToList();
         }
         public async Task<ApplicationUser> GetUserByEmailAsync(string email)
         {
             return await _usermanager.FindByEmailAsync(email);
         }
-        
+
         public async Task<IdentityResult> createuserAsync(singupmodel singup)
         {
             var User = new ApplicationUser()
@@ -45,17 +44,17 @@ namespace E_Commerce.repositry
                 fname = singup.Name,
                 Email = singup.email,
                 UserName = singup.email
-                
+
             };
             var result = await _usermanager.CreateAsync(User, singup.Password);
-            
+
             if (result.Succeeded)
             {
                 await createrole();
                 await _usermanager.AddToRoleAsync(User, "Customer");
-                
+
                 await GenerateEmailConfirmationTokenAsync(User);
-                
+
             }
             return result;
         }
@@ -63,13 +62,13 @@ namespace E_Commerce.repositry
         {
             IdentityRole identityRole = new IdentityRole
             {
-                Name ="Customer",
-                NormalizedName="Customer"
+                Name = "Customer",
+                NormalizedName = "Customer"
             };
             IdentityResult result = await _rolemanager.CreateAsync(identityRole);
-               
+
         }
-        
+
         public async Task GenerateEmailConfirmationTokenAsync(ApplicationUser user)
         {
             var token = await _usermanager.GenerateEmailConfirmationTokenAsync(user);
@@ -88,9 +87,9 @@ namespace E_Commerce.repositry
         }
         public async Task<IdentityResult> ConfirmEmailAsync(string uid, string token)
         {
-            
+
             return await _usermanager.ConfirmEmailAsync(await _usermanager.FindByIdAsync(uid), token);
-            
+
         }
         public async Task<ApplicationUser> getuser(singinmodel singin)
         {
@@ -98,10 +97,10 @@ namespace E_Commerce.repositry
         }
         public async Task<SignInResult> PasswordSignInAsync(singinmodel signInModel)
         {
-           return await _signInManager.PasswordSignInAsync(signInModel.Email, signInModel.Password,signInModel.RememberMe, true);
-          
+            return await _signInManager.PasswordSignInAsync(signInModel.Email, signInModel.Password, signInModel.RememberMe, true);
+
         }
-    
+
 
         public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordModel model)
         {
@@ -113,7 +112,7 @@ namespace E_Commerce.repositry
             await _signInManager.SignOutAsync();
         }
 
-        
+
         private async Task SendEmailConfirmationEmail(ApplicationUser user, string token)
         {
             string appDomain = _configuration.GetSection("Application:AppDomain").Value;
@@ -144,7 +143,7 @@ namespace E_Commerce.repositry
              return(_usermanager.Users.FirstOrDefault(x => x.Id == id)==null);
             
         }*/
-       
+
         private async Task SendForgotPasswordEmail(ApplicationUser user, string token)
         {
             string appDomain = _configuration.GetSection("Application:AppDomain").Value;
