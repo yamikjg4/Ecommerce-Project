@@ -67,10 +67,34 @@
     display: none;
 }
 
-*@
-body {
+body::before{
+    display:block;
+    content:'';
+    height:80px;
+}
+/*body {
     min-height: 100vh;
+}*/
+@media screen and (max-width: 480px) and (min-width:280px) {
+   
+   /* #img1{
+        height:200px;
+        width:280px;
+    }
+    #img2 {
+        height:200px;
+        width: 100%;
+    }
+    #img3 {
+        height:200px;
+        width: 100%;
+    }*/
 }
 
-
-
+.ui-widget-content {
+    z-index: 999 !important;
+    padding-top: 10px !important;
+}
+.navbar{
+    z-index:10!important;
+}

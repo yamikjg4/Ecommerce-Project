@@ -10,6 +10,7 @@ namespace E_Commerce.Models
         public int product_id { get; set; }
         [Display(Name = "Selcet Category")]
         [Required(ErrorMessage = "Please Selcet Category")]
+ /*       [RegularExpression("[a-zA-Z]+", ErrorMessage = "Alphabet is Not allowed")]*/
         public int? cat_id { get; set; }
         [Required(ErrorMessage = "Product Name is Required")]
         [Display(Name = "Product Name")]

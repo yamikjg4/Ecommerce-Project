@@ -24,9 +24,11 @@ namespace E_Commerce.Areas.Admin.Controllers
         private readonly IWebHostEnvironment _webhost;
         private readonly IAccountrepostry _accountrepostry;
         private readonly UserManager<ApplicationUser> _usermanager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         public AdminController(Eshopcontext db, IWebHostEnvironment webhost, IAccountrepostry accountrepostry,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
+            _signInManager = signInManager;
             _usermanager = userManager;
             _db = db;
             _webhost = webhost;
@@ -36,9 +38,10 @@ namespace E_Commerce.Areas.Admin.Controllers
         public IActionResult Index()
         {
             TempData["getid"] = _usermanager.GetUserId(HttpContext.User);
+            var id = TempData["getid"];
             ViewBag.q2 = _db.tblproduct.Count();
             ViewBag.q1 = _db.tblcategory.Count();
-            ViewBag.q3 = _usermanager.Users.Count(x => x.Email != "yamikgandhi@gmail.com");
+            ViewBag.q3 = _accountrepostry.getcount();
             return View();
         }
         [Route("AddProduct")]
@@ -152,6 +155,12 @@ namespace E_Commerce.Areas.Admin.Controllers
                     ViewBag.alertmesaage = "Category Inserted SuccesFully";
 
                     return RedirectToAction("ViewCategory", "Admin", new { area = "Admin" });
+                }
+                else {
+                    ViewBag.status = false;
+                    ViewBag.alertmesaage = "Category Name Allready Exsists";
+                    ModelState.Clear();
+                    return View();
                 }
                 /* if (obj.cat_id > 0) {*/
             }
@@ -360,6 +369,10 @@ namespace E_Commerce.Areas.Admin.Controllers
         [Route("ViewUser")]
         public IActionResult viewuser(int pagenumber = 1)
         {
+           /* string ids = _usermanager.GetUserId(HttpContext.User);*/
+        /*   var id = TempData["getid"];*/
+
+
             var user = _accountrepostry.alluser();
             const int pagesize = 10;
             if (pagenumber < 1)
@@ -448,9 +461,10 @@ namespace E_Commerce.Areas.Admin.Controllers
                     IdentityResult res = await _usermanager.UpdateAsync(user);
                     if (res.Succeeded)
                     {
+                        await _signInManager.RefreshSignInAsync(user);
                         ViewBag.status = true;
                         ViewBag.alertmesaage = "Update Succesfully";
-                        await _accountrepostry.logoutsync();
+                        /*await _accountrepostry.logoutsync();*/
                         return RedirectToAction("login", "Account");
                     }
                     else

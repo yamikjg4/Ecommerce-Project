@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_login.cshtml";
 }
 
-
+@*<script src="/js/app.js"></script>*@
 <div class="forms-container">
     <div class="signin-signup">
         <form method="post">
@@ -44,7 +44,7 @@
             <p>
                 Register New Account For E-Shoping
             </p>
-            <input type="button" value="Sign up" id="singup" class="btn transparent">
+            <input type="button" value="Sign up" id="singup" class="btn transparent" onclick="location.href = '/Account/Register/'">
 
         </div>
         <img src="~/Image/register.svg" class="image" alt="" />

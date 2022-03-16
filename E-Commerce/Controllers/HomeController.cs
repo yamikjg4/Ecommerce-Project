@@ -1,7 +1,12 @@
 ﻿using E_Commerce.Models;
 using E_Commerce.repositry;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,17 +19,23 @@ namespace E_Commerce.Controllers
         private readonly UserManager<ApplicationUser> _usermanager;
         private readonly Eshopcontext _db;
         private readonly IAccountrepostry _accountrepostry;
-        public HomeController(IProductRepositry prd, UserManager<ApplicationUser> usermanager, Eshopcontext db, IAccountrepostry accountrepostry)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IHttpContextAccessor _https;
+        public HomeController(IProductRepositry prd, UserManager<ApplicationUser> usermanager, Eshopcontext db, IAccountrepostry accountrepostry, IHttpContextAccessor http ,SignInManager<ApplicationUser> signInManager)
         {
+            _signInManager = signInManager;
             _usermanager = usermanager;
             _prd = prd;
             _db = db;
+            _https = http;
             _accountrepostry = accountrepostry;
         }
-
-
+        List<Cart> li = new List<Cart>();
+   
         public IActionResult Index(int pagenumber = 1, string search = "")
         {
+            TempData["search"] = search;
+            TempData.Keep(search);
             /*      pagenumber = 1;*/
             TempData["getid"] = _usermanager.GetUserId(HttpContext.User);
             if (User.IsInRole("Admin"))
@@ -125,9 +136,15 @@ namespace E_Commerce.Controllers
 
             return View(res);
         }
+        [Authorize(Roles ="Customer")]
         public async Task<IActionResult> EditProfile(string id)
         {
-
+            TempData["getid"] = _usermanager.GetUserId(HttpContext.User);
+            if (string.IsNullOrEmpty(id)) {
+            
+                var ids = TempData["getid"];
+                id = Convert.ToString(ids);
+            }
             return View(await _usermanager.FindByIdAsync(id.Trim()));
         }
         [HttpPost]
@@ -165,9 +182,10 @@ namespace E_Commerce.Controllers
                     IdentityResult res = await _usermanager.UpdateAsync(user);
                     if (res.Succeeded)
                     {
+                        await _signInManager.RefreshSignInAsync(user);
                         ViewBag.status = true;
                         ViewBag.alertmesaage = "Update Succesfully";
-                        await _accountrepostry.logoutsync();
+                    /*    await _accountrepostry.logoutsync();*/
                         return RedirectToAction("login", "Account");
                     }
                     else
@@ -288,6 +306,213 @@ namespace E_Commerce.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("ManageAddress");
         }
+        
+        public IActionResult cart(string cart)
+        {
+
+            Cart cartmodel = new Cart();
+            
+                            
+                var cartproduct = Request.Cookies["ProductId"];
+                      
+                if (cartproduct !="")
+                {
+                    var prdids = cartproduct;
+                    var id = prdids.Split(',');
+                
+                    cartmodel.cartprouctid = id.Select(x => int.Parse(x)).ToList();
+
+                    cartmodel.cartproduct = GetProducts(cartmodel.cartprouctid);
+                }
+            else 
+            {
+                return View();
+            }
+            
+            return View(cartmodel);
+        }
+       
+        public JsonResult getoutput(string Prefix)
+        {
+            
+        /*    search = Convert.ToString(TempData["search"]);*/
+           List<Category> categories = _db.tblcategory.ToList();
+            List<Product> products = _db.tblproduct.ToList();
+
+            var product = (from i in _db.tblproduct
+                           where i.Product_name.Contains(Prefix)
+                           select new
+                           {
+                               label = i.Product_name,
+                               val = i.product_id,
+                           }
+                           );
+            var json = JsonConvert.SerializeObject(product);
+
+            return Json(product);
+        }
+        public List<Product> GetProducts(List<int> id)
+        {
+            return _db.tblproduct.Where(x => id.Contains(x.product_id)).ToList();
+        }
+        [HttpGet]
+        [Authorize(Roles = "Customer")]
+        public IActionResult checkout()
+        {
+            Cart cartmodel = new Cart();
+
+
+            var cartproduct = Request.Cookies["ProductId"];
+
+            if (cartproduct != "")
+            {
+                var prdids = cartproduct;
+                var id = prdids.Split(',');
+
+                cartmodel.cartprouctid = id.Select(x => int.Parse(x)).ToList();
+
+                cartmodel.cartproduct = GetProducts(cartmodel.cartprouctid);
+                ViewBag.sum=cartmodel.cartproduct.Sum(x => x.product_price * cartmodel.cartprouctid.Where(productid => productid == x.product_id).Count());
+                var userid=_usermanager.GetUserId(HttpContext.User);
+                /*  TempData["getid"] = _usermanager.GetUserId(HttpContext.User);*/
+
+              ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).ToList();
+                
+                 
+                
+                ViewBag.count=_db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).Count();
+            }
+            return View();
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> checkout(int ad_id)
+        {
+            Cart cartmodel = new Cart();
+
+
+            var cartproduct = Request.Cookies["ProductId"];
+
+            if (cartproduct != "")
+            {
+                var prdids = cartproduct;
+                var id = prdids.Split(',');
+
+                cartmodel.cartprouctid = id.Select(x => int.Parse(x)).ToList();
+
+                cartmodel.cartproduct = GetProducts(cartmodel.cartprouctid);
+                ViewBag.sum = cartmodel.cartproduct.Sum(x => x.product_price * cartmodel.cartprouctid.Where(productid => productid == x.product_id).Count());
+                var userid = _usermanager.GetUserId(HttpContext.User);
+                /*  TempData["getid"] = _usermanager.GetUserId(HttpContext.User);*/
+               
+                foreach (var item in cartmodel.cartproduct)
+                {
+                    TBLorder ord = new TBLorder();
+                    var prd = _db.tblproduct.Where(x => x.product_id == item.product_id).FirstOrDefault();
+                    var productqty = cartmodel.cartprouctid.Where(productid => productid == item.product_id).Count();
+                    ord.qtys = productqty;
+                    if (prd.product_qty>productqty) {
+                        ord.ad_id = ad_id;
+                        /*    ord.Address = ad_id;*/
+                        ord.userid = userid;
+                        ord.product_id = item.product_id;
+                        ord.status = "Pending";
+                        ord.date = DateTime.Now;
+
+                        ord.totalpay = Convert.ToInt32(productqty * item.product_price);
+                        ord.payment = "COD";
+
+                        /* prd.product_id = item.product_id;*/
+                        prd.ImageFile = item.ImageFile;
+                        prd.Product_name = item.Product_name;
+                        prd.product_price = item.product_price;
+                        prd.product_desc = item.product_desc;
+                        var qty = item.product_qty - productqty;
+                        prd.product_qty = qty;
+
+                        await _db.tblorder.AddAsync(ord);
+                        _db.tblproduct.Update(prd);
+                    }
+
+                }
+                
+             var save=await _db.SaveChangesAsync();
+             if(Convert.ToBoolean(save))
+                {
+                    ViewBag.Message = "Success";
+                  /*  return RedirectToAction("sucessorder");*/
+                }
+
+               
+
+            }
+
+            return View();
+        }
+        public IActionResult aboutus()
+        {
+            return View();
+        }
+        public IActionResult contactus()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult contactus(string uname)
+        {
+            var user = uname;
+            ViewBag.Message = "Hello "+user+" ,we will get back to you soon. thankyou";
+            return View();
+        }
+        [Authorize(Roles ="Customer")]
+        public async Task<IActionResult> buynow(int id)
+        {
+            TempData["id"] = id;
+            TempData.Keep();
+            var userid = _usermanager.GetUserId(HttpContext.User);
+
+            ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).ToList();
+            ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).Count();
+
+            var product = await _db.tblproduct.FindAsync(id);
+            ViewBag.price = product.product_price;
+            return View();
+        }
+        [HttpPost]
+        [ActionName("buynow")]
+        public async Task<IActionResult> buy(int ad_id)
+        {
+            var product = await _db.tblproduct.FindAsync(TempData["id"]);
+            var userid = _usermanager.GetUserId(HttpContext.User);
+
+            TBLorder ord = new TBLorder();
+            ord.ad_id = ad_id;
+            /*    ord.Address = ad_id;*/
+            ord.userid = userid;
+            ord.product_id = product.product_id;
+            ord.status = "Pending";
+            ord.date = DateTime.Now;
+            ord.qtys = 1;
+            ord.totalpay = Convert.ToInt32(product.product_price);
+            ord.payment = "COD";
+
+            product.ImageFile = product.ImageFile;
+            product.Product_name = product.Product_name;
+            product.product_price = product.product_price;
+           product.product_desc = product.product_desc;
+            var qty =  product.product_qty- ord.qtys;
+            product.product_qty = qty;
+
+            await _db.tblorder.AddAsync(ord);
+            _db.tblproduct.Update(product);
+            var check=await _db.SaveChangesAsync();
+            if (Convert.ToBoolean(check))
+            {
+                return RedirectToAction("Index");
+
+            }
+            return View();
+        }
     }
-   
+
 }

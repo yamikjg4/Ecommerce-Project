@@ -37,23 +37,21 @@
     </div>
 
 
-
-
-
     <div class="card  w-75 mx-auto">
         <div class="card-header text-center">
             <h3>View User</h3>
         </div>
-        <div class="card-body w-auto">
+        <div class="card-body w-auto table-responsive">
 
-            <table class="table">
+            <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>Id</th>
                         <th>
                             Fullname
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.UserName)
+                           Email-Id
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.PhoneNumber)
@@ -63,9 +61,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @{int i=1;}
+                    
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td>@(i++)</td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.fname)
                             </td>
@@ -130,15 +131,9 @@
                     </ul>
                 }
             </div>
-
         </div>
+        
     </div>
-
-
-
-
-
-
 
 </div>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>

@@ -1,10 +1,11 @@
-﻿@model E_Commerce.Models.Product
+﻿@inject Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager
+@model E_Commerce.Models.Product
 
 @{
     ViewData["Title"] = "viewproduct";
     Layout = "~/Views/Shared/_custdash.cshtml";
 }
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 <style>
        @* body {
             font-family: 'Roboto Condensed', sans-serif;
@@ -59,11 +60,11 @@
 
 </style>
 
-<div class="container">
-    <div class="col-lg-12 border p-3 main-section bg-white">
-        <div class="row hedding m-0 pl-3 pt-0 pb-3">
+<div class="container-fluid py-auto">
+    <div class="col-lg-12  p-3 main-section bg-white">
+       @* <div class="row hedding m-0 pl-3 pt-0 pb-3">
             Product Detail
-        </div>
+        </div>*@
         <div class="row m-0">
             <div class="col-lg-4 left-side-product-box pb-3">
 
@@ -89,32 +90,45 @@
                             </span>
                             <hr class="m-0 pt-2 mt-2">
                         </div>
-
-                        <div class="col-lg-5">
-                            <h6>Quantity :</h6>
-                            <input type="number" class="form-control text-center w-100" value="1" max="10" min="1">
-                        </div>
-                        <div class="col-lg-12 mt-3">
-                            <div class="row">
-                                <div class="col-lg-6 pb-2">
-                                    <a asp-action="addtocart" asp-controller="Home" asp-route-id="@Model.product_id" class="btn btn-danger w-100">Add To Cart</a>
-                                </div>
-                                <div class="col-lg-6">
-                                    <a href="#" class="btn btn-success w-100">Buy Now</a>
+                        @* <form asp-action="addtocart" asp-controller="Home" asp-route-id="@Model.product_id">   *@
+                        @*<div class="col-lg-5">
+            <h6>Quantity :</h6>
+            <input type="number" name="qtys" class="form-control text-center w-100 qty" value="1" max="10" min="1">
+        </div>*@
+                        @if (Model.product_qty > 0)
+                        {
+                            <div class="col-lg-12 mt-3">
+                                <div class="row">
+                                    <div class="col-lg-6 pb-2">
+                                        <button id="addtocartbtn" class="btn btn-danger w-100 addtocart" data-id="@Model.product_id">Add To Cart</button>
+                                        @*  <button id="gotocartbtn" class="btn btn-danger w-100" style="display:none;">Go To Cart</button>*@
+                                    </div>
+                                    @* </form>*@
+                                    <div class="col-lg-6">
+                                        <a asp-action="buynow" asp-route-id="@Model.product_id" class="btn btn-success w-100">Buy Now</a>
+                                    </div>
                                 </div>
                             </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-12 mt-3">
+                                <div class="row col-12">
+                                    <span class="font-weight-bold text-center text-danger" style="font-size:16px;">Currently Out Of Stock</span>
+                                </div>
+                            </div>
+                       }
+                            </div>
                         </div>
-                    </div>
-                </div>
             </div>
         </div>
-     
+
         <div class="row">
             <div class="col-lg-12 text-center pt-3">
-                <h4>More Product</h4>
+                <h4>Suggest Product</h4>
             </div>
         </div>
-       
+
         <div class="row mt-3 p-0 justify-content-between text-center pro-box-section">
             @foreach (var items in @ViewBag.prd)
             {
@@ -129,32 +143,61 @@
                     </div>
 
                 </div>
-    
 
 
 
 
 
-}
+
+            }
         </div>
-      
+
         @*
 
 
-            @for (int i = ids; i <= det; i++)
-            {
+                @for (int i = ids; i <= det; i++)
+                {
 
-                <div class="col-lg-3 pb-2">
-                    <div class="pro-box border p-0 m-0">
-                        <img src="/Products/@Model.ImageFile">
-                        <div>@Model.Product_name</div>
+                    <div class="col-lg-3 pb-2">
+                        <div class="pro-box border p-0 m-0">
+                            <img src="/Products/@Model.ImageFile">
+                            <div>@Model.Product_name</div>
+                        </div>
+
                     </div>
 
-                </div>
-
-                }
+                    }
 
 
-        </div>*@
+            </div>*@
     </div>
 </div>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    
+
+
+<script>
+    
+    var products;
+
+    $(".addtocart").click(function () {
+       @* debugger;*@
+        var exsitingcookie = $.cookie('ProductId');
+        if (exsitingcookie != undefined && exsitingcookie !="" && exsitingcookie != null) {
+            products = exsitingcookie.split(',');
+        }
+        else {
+            products=[]
+        }
+        var productid = $(this).attr('data-id');
+        products.push(productid);
+        @*products.append(productid);*@
+        $.cookie('ProductId', products.join(','), { expires: 365, path: '/' });
+        updatecartproduct();
+        swal("Add To Cart Successfully", "You clicked the button!", "success");
+        @*$('.item_count').html(function (i, val) { return val * 1 + 1 });*@
+        console.log("ok");
+       
+    });
+
+</script>

@@ -67,39 +67,56 @@ namespace E_Commerce.Controllers
         [Route("Account/Login")]
         public IActionResult login()
         {
+            if (_signInManager.IsSignedIn(User))
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    return Redirect("~/Admin/Admin/Index/");
+                }
+                else if (User.IsInRole("Customer"))
+                {
+                    return Redirect("~/Home/Index/");
+                }
+            }
             return View();
         }
         [Route("Account/Login")]
         [HttpPost]
         public async Task<IActionResult> login(singinmodel signInModel, string returnUrl)
         {
+          
             if (ModelState.IsValid)
             {
                 var result = await _accountRepository.PasswordSignInAsync(signInModel);
-                if (result.Succeeded)
-                {
-                    if (!string.IsNullOrEmpty(returnUrl))
+                
+                    if (result.Succeeded)
                     {
-                        return LocalRedirect(returnUrl);
-                    }
-                    ViewBag.status = true;
-                    ViewBag.alertmesaage = "Account Login Successfully";
+                        if (!string.IsNullOrEmpty(returnUrl))
+                        {
+                            return LocalRedirect(returnUrl);
+                        }
+                        ViewBag.status = true;
+                        ViewBag.alertmesaage = "Account Login Successfully";
 
-                    var user = await _usermanager.FindByEmailAsync(signInModel.Email);
-                    // Get the roles for the user
-                    var roles = await _usermanager.GetRolesAsync(user);
-                    foreach (string item in roles)
-                    {
-                        if (item == "Admin")
+                        var user = await _usermanager.FindByEmailAsync(signInModel.Email);
+                        // Get the roles for the user
+                        var roles = await _usermanager.GetRolesAsync(user);
+                        foreach (string item in roles)
                         {
-                            return Redirect("~/Admin/Admin/Index/");
-                        }
-                        else if (item == "Customer")
-                        {
-                            return Redirect("~/Home/Index/");
+                            if (item == "Admin")
+                            {
+
+                                return Redirect("~/Admin/Admin/Index/");
+
+                            }
+                            else if (item == "Customer")
+                            {
+                                return Redirect("~/Home/Index/");
+
+                            }
                         }
                     }
-                }
+                
                 else if (result.IsLockedOut)
                 {
                     ModelState.AddModelError("", "Account is Block Try after 2Hr");
@@ -129,6 +146,7 @@ namespace E_Commerce.Controllers
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmails(string uid, string token, string email)
         {
+          
             EmailCofirmModel model = new EmailCofirmModel
             {
                 Email = email
@@ -156,7 +174,7 @@ namespace E_Commerce.Controllers
                 if (user.EmailConfirmed)
                 {
                     model.EmailVerified = true;
-                    return View(model);
+                    return RedirectToAction("login","Account");
                 }
 
                 await _accountRepository.GenerateEmailConfirmationTokenAsync(user);

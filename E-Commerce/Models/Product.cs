@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace E_Commerce.Models
 {
@@ -14,6 +16,7 @@ namespace E_Commerce.Models
         /*[ForeignKey("cat_id")]*/
         public int cat_id { get; set; }
         [Display(Name = "Product Name")]
+        /*[RegularExpression("[a-zA-Z]+", ErrorMessage = "Alphabet is Not allowed")]*/
         [Required]
         public string Product_name { get; set; }
         [Display(Name = "Product Price")]
@@ -31,5 +34,10 @@ namespace E_Commerce.Models
         [Required]
         public string ImageFile { get; set; }
         public Category category { get; set; }
+        public virtual ICollection <TBLorder> ord { get; set; }
+        internal List<int> ToList()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -46,9 +46,9 @@
         <div class="card-header text-center">
             <h3>View Product</h3>
         </div>
-        <div class="card-body w-auto">
+        <div class="card-body w-auto table-responsive">
 
-            <table class="table">
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>
@@ -92,7 +92,8 @@
                                 Rs.@Html.DisplayFor(modelItem => item.products.product_price)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.products.product_desc)
+                              @*  @Html.DisplayFor(modelItem => item.products.product_desc)*@
+                                @Html.Raw(item.products.product_desc)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.products.product_qty)

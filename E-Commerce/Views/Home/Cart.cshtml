@@ -1,0 +1,123 @@
+﻿@model Cart
+@{
+    ViewData["Title"] = "cart";
+    Layout = "~/Views/Shared/_custdash.cshtml";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+@if (Model != null)
+{
+    if (Model.cartproduct != null && Model.cartproduct.Count > 0)
+    {
+
+
+        <div class="container pt-3">
+            <div class="row">
+                <div class="col-md-8 col-12">
+                    <div class="card">
+                        @{var qty = Model.cartprouctid.Count();}
+                        <div class="card-header">My Cart(@qty)</div>
+                        @*<div class="card-body" style="padding:-25%;">*@
+                        @foreach (var item in Model.cartproduct)
+                        {
+                            @* <hr>*@
+                            <div class="card card-body">
+                                <div class="row">
+                                    <div class="col-6 col-md-4">
+                                        <img src="/Products/@item.ImageFile" style="width:80px; max-width:80px;">
+                                        <br>
+                                        @{
+                                            var productqty = Model.cartprouctid.Where(productid => productid == item.product_id).Count();
+                                        }
+                                        <br />
+                                        <p>Qty:@productqty</p>
+                                    </div>
+                                    <div class="col-md-4 col-6 ">
+                                        <p>@item.Product_name</p>
+                                        <p>Price:<span class="font4-weight-bold">RS.@item.product_price</span></p>
+                                        <p>Payble Amount:<span class="font-weight-bold">Rs.@(item.product_price*productqty)</span></p>
+                                        <button class="btn btn-link d-block" data-id="@item.product_id" onclick="remove(@item.product_id);">Remove</button>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        @if (item.cat_id == 1)
+                                        {
+                                            <p class="text-muted">This Product Deliver 2-3 Day</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">This Product Deliver 3-4 Day</p>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        }
+                        <div class="card-footer"><div align="right"><a asp-action="checkout" asp-controller="Home" class="btn text-light" style="background-color:orangered">Place Order</a></div></div>
+                        @*</div>*@
+
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            Price Detail
+                        </div>
+                        <div class="card-body">
+                            Total Bill:<span class="font-weight-bold">Rs.@Model.cartproduct.Sum(x => x.product_price * Model.cartprouctid.Where(productid => productid == x.product_id).Count())</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+
+}
+else
+{
+    <div class="container text-center">
+        <img src="https://m.edhik.com/cart.png" style="width:250px;max-width:250px;">
+        <p>
+            Missing Cart Items?<br>
+            <span class="text-muted">Go To Shopping Page</span>
+        </p>
+        <a asp-action="Index" asp-controller="Home" class="btn btn-lg d-inline-block text-light" style="background-color:orangered">Shopping Now</a>
+
+    </div>
+}
+
+<script type="text/javascript">
+    var product;
+    function remove(e) {
+        console.log(e);
+
+        var products = $.cookie('ProductId');
+        const str = products;
+
+
+
+        const words = str.split(',');
+        console.log(words);
+
+        var value = e.toString();
+        var arr = words;
+
+
+        arr = arr.filter(function (item) {
+            return item !== value
+        })
+
+        console.log(arr);
+      @*  product = words.split(',');*@
+       $.cookie('ProductId', arr, { expires: 365, path: '/' });
+
+            location.reload();
+
+
+
+
+    }
+</script>

@@ -1,0 +1,61 @@
+﻿@model E_Commerce.Models.TBLorder
+@*@model Cart*@
+@{
+    ViewData["Title"] = "checkout";
+    Layout = "~/Views/Shared/_custdash.cshtml";
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<div class="container pt-3">
+    <div class="row">
+        <div class="col-md-8 col-12">
+            <div class="card">
+                <div class="card-header">Address</div>
+                <form asp-action="checkout" method="post">
+                    @if (ViewBag.count > 0)
+                    {
+                        @foreach (var item in ViewBag.Address)
+                        {
+                            <div class="card card-body" style="flex-direction:row;">
+                                <div>
+                                    @*  @Html.RadioButtonFor(Model => Model.ad_id, new { @item.ad_id }, htmlAttributes: new { @class = "mr-2 my-auto" })@item.name,@item.Phone
+        <br>@item.Address,@item.pincode,,@item.City,@item.State*@
+                                    <input asp-for="ad_id" type="radio" value="@item.ad_id" name="ad_id" /> @item.name,@item.Phone
+                                    <br>@item.Address,@item.pincode,@item.City,@item.State
+                                </div>
+                            </div>
+                        }
+                    }
+            else if(ViewBag.count==0)
+            {
+                <div class="card card-body text-center">Please Add Address Right Now</div>
+                    }
+
+                    <div class="card-footer"><div align="right"><button type="submit" class="btn text-light" style="background-color:orangered">Payment</button></div></div>
+</form>
+                </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Price Detail
+                </div>
+                <div class="card-body">
+                    Total Bill:<span class="font-weight-bold">Rs.@ViewBag.sum</span>
+                </div>
+                               <div class="card card-body">
+                                   <div>                        Payment Method:<br><input type="radio" value="COD" checked>&nbsp;<label>Cash On Delivery(COD)</label></div>
+
+                               
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+@if (ViewBag.Message != null)
+            {
+                <script>
+                   @* $.cookie('ProductId', '', { path: '/' });*@
+                    $.removeCookie('ProductId', { path: '/' });
+                    location.href = '/Account/Login/';
+                </script>
+            }

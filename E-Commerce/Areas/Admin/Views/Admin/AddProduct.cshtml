@@ -11,12 +11,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Add Product</h1>
+                    @*<h1 class="m-0">Add Product</h1>*@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Add Category</li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Admin" asp-area="Admin">Home</a></li>
+                        <li class="breadcrumb-item active">Add Product</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -29,7 +29,7 @@
             <!-- Small boxes (Stat box) -->
             <div class="row d-flex justify-content-center">
                 <!--Add category code-->
-                <div class="col-md-4">
+                <div class="col-md-8">
                     <form asp-action="AddProduct" asp-controller="Admin" asp-area="Admin" method="post" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
@@ -55,7 +55,7 @@
                         <div class="form-group">
                             <label asp-for="product_desc" class="control-label"></label>
                             @*              <input asp-for="product_desc" class="form-control"  />*@
-                            <textarea asp-for="product_desc" class="form-control" style="display: block; overflow: hidden; resize: none;" id="autoresizing"></textarea>
+                            <textarea asp-for="product_desc" class="form-control" id="myEditor"></textarea>
                             <span asp-validation-for="product_desc" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -64,13 +64,13 @@
                             <span asp-validation-for="product_qty" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="ImageFile" class="control-label" ></label>
+                            <label asp-for="ImageFile" class="control-label"></label>
                             <input asp-for="ImageFile" class="form-control" id="image-input" accept="image/*" />
                             <span asp-validation-for="ImageFile" class="text-danger"></span>
                         </div>
-                       <div>
-                           <img id="preview-img" style="max-height:175px;"/>
-                       </div>
+                        <div>
+                            <img id="preview-img" style="max-height:175px;" />
+                        </div>
                         <div class="form-group">
                             <input type="submit" value="Create" class="btn btn-primary" />
                         </div>
@@ -88,6 +88,9 @@
     </section>
 <!-- /.content -->
     </div>
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.2.2/tinymce.min.js"></script>*@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.11/tinymce.min.js"></script>
+<script type="text/javascript" src="<your installation path>/tinymce/tinymce.min.js"></script>
 <script>
     var per = document.getElementById("preview-img");
     var image = document.getElementById("image-input");
@@ -98,7 +101,67 @@
         var tempurl = URL.createObjectURL(event.target.files[0]);
         per.setAttribute("src", tempurl);
     });
-  
+
+</script>
+<script>
+   tinymce.init({
+	/* replace textarea having class .tinymce with tinymce editor */
+	selector: "textarea",
+	
+	/* theme of the editor */
+	theme: "modern",
+	skin: "lightgray",
+	
+	/* width and height of the editor */
+	width: "100%",
+	height: 150,
+	
+	/* display statusbar */
+	statubar: true,
+	
+	/* plugin */
+	plugins: [
+		"advlist autolink link image lists charmap print preview hr anchor pagebreak",
+		"searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+		"save table contextmenu directionality emoticons template paste textcolor"
+	],
+
+	/* toolbar */
+	toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons",
+	
+	/* style */
+	style_formats: [
+		{title: "Headers", items: [
+			{title: "Header 1", format: "h1"},
+			{title: "Header 2", format: "h2"},
+			{title: "Header 3", format: "h3"},
+			{title: "Header 4", format: "h4"},
+			{title: "Header 5", format: "h5"},
+			{title: "Header 6", format: "h6"}
+		]},
+		{title: "Inline", items: [
+			{title: "Bold", icon: "bold", format: "bold"},
+			{title: "Italic", icon: "italic", format: "italic"},
+			{title: "Underline", icon: "underline", format: "underline"},
+			{title: "Strikethrough", icon: "strikethrough", format: "strikethrough"},
+			{title: "Superscript", icon: "superscript", format: "superscript"},
+			{title: "Subscript", icon: "subscript", format: "subscript"},
+			{title: "Code", icon: "code", format: "code"}
+		]},
+		{title: "Blocks", items: [
+			{title: "Paragraph", format: "p"},
+			{title: "Blockquote", format: "blockquote"},
+			{title: "Div", format: "div"},
+			{title: "Pre", format: "pre"}
+		]},
+		{title: "Alignment", items: [
+			{title: "Left", icon: "alignleft", format: "alignleft"},
+			{title: "Center", icon: "aligncenter", format: "aligncenter"},
+			{title: "Right", icon: "alignright", format: "alignright"},
+			{title: "Justify", icon: "alignjustify", format: "alignjustify"}
+		]}
+	]
+});
 </script>
 <script>
     textarea = document.querySelector("#autoresizing");

@@ -11,11 +11,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Add Product</h1>
+                    @*<h1 class="m-0">Add Product</h1>*@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Admin" asp-area="Admin">Home</a></li>
                         <li class="breadcrumb-item active">Add Category</li>
                     </ol>
                 </div><!-- /.col -->
@@ -29,7 +29,7 @@
             <!-- Small boxes (Stat box) -->
             <div class="row d-flex justify-content-center">
                 <!--Add category code-->
-                <div class="col-md-4">
+                <div class="col-md-8">
                     <form asp-action="EditProduct" asp-controller="Admin" asp-area="Admin" method="post" enctype="multipart/form-data">
                         @Html.HiddenFor(e => e.product_id)
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -56,7 +56,7 @@
                         <div class="form-group">
                             <label asp-for="product_desc" class="control-label"></label>
                             @*              <input asp-for="product_desc" class="form-control"  />*@
-                            <textarea asp-for="product_desc" class="form-control" style=" display: block; overflow: hidden; resize: none;" id="autoresizing"></textarea>
+                            <textarea asp-for="product_desc" class="form-control" id="myEditor"></textarea>
                             <span asp-validation-for="product_desc" class="text-danger"></span>
                         </div>
                         <div class="form-group">
@@ -106,7 +106,7 @@
 </script>
 @*<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>*@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.9.11/tinymce.min.js"></script>
 @if (@ViewBag.alertmesaage != null && @ViewBag.status != null)
 {
     <script>
@@ -122,7 +122,74 @@
         this.style.height = 'auto';
         this.style.height = this.scrollHeight + 'px';
 </script>
+<script>
+    tinymce.init({
+        /* replace textarea having class .tinymce with tinymce editor */
+        selector: "textarea",
 
+        /* theme of the editor */
+        theme: "modern",
+        skin: "lightgray",
+
+        /* width and height of the editor */
+        width: "100%",
+        height: 150,
+
+        /* display statusbar */
+        statubar: true,
+
+        /* plugin */
+        plugins: [
+            "advlist autolink link image lists charmap print preview hr anchor pagebreak",
+            "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+            "save table contextmenu directionality emoticons template paste textcolor"
+        ],
+
+        /* toolbar */
+        toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons",
+
+        /* style */
+        style_formats: [
+            {
+                title: "Headers", items: [
+                    { title: "Header 1", format: "h1" },
+                    { title: "Header 2", format: "h2" },
+                    { title: "Header 3", format: "h3" },
+                    { title: "Header 4", format: "h4" },
+                    { title: "Header 5", format: "h5" },
+                    { title: "Header 6", format: "h6" }
+                ]
+            },
+            {
+                title: "Inline", items: [
+                    { title: "Bold", icon: "bold", format: "bold" },
+                    { title: "Italic", icon: "italic", format: "italic" },
+                    { title: "Underline", icon: "underline", format: "underline" },
+                    { title: "Strikethrough", icon: "strikethrough", format: "strikethrough" },
+                    { title: "Superscript", icon: "superscript", format: "superscript" },
+                    { title: "Subscript", icon: "subscript", format: "subscript" },
+                    { title: "Code", icon: "code", format: "code" }
+                ]
+            },
+            {
+                title: "Blocks", items: [
+                    { title: "Paragraph", format: "p" },
+                    { title: "Blockquote", format: "blockquote" },
+                    { title: "Div", format: "div" },
+                    { title: "Pre", format: "pre" }
+                ]
+            },
+            {
+                title: "Alignment", items: [
+                    { title: "Left", icon: "alignleft", format: "alignleft" },
+                    { title: "Center", icon: "aligncenter", format: "aligncenter" },
+                    { title: "Right", icon: "alignright", format: "alignright" },
+                    { title: "Justify", icon: "alignjustify", format: "alignjustify" }
+                ]
+            }
+        ]
+    });
+</script>
 <script type="text/javascript">
     function functionConfirm(event) {
         console.log('click');

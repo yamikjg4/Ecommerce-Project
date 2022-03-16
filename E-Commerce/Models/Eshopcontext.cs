@@ -16,5 +16,6 @@ namespace E_Commerce.Models
         public DbSet<Category> tblcategory { get; set; }
         public DbSet<Product> tblproduct { get; set; }
         public DbSet<tblAddress> tblAddresses { get; set; }
+        public DbSet<TBLorder> tblorder { get; set; }
     }
 }

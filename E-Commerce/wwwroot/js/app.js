@@ -1,13 +1,36 @@
 $(document).ready(function () {
-    
-        $('#singup').click(function (e) {
-            console.log("click");
-            location.href = '/Account/Register/';
-        });
-        $('#sign-in').click(function (c) {
-            console.log("click");
-            location.href = '/Account/Login/';
-        });
+    updatecartproduct();
+  
+    $(function () {
+    $("#search2").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Home/getoutput",
+                type: "POST",
+                dataType: "json",
+                data: { Prefix: request.term },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return item;
+                    }))
+
+                },
+                error: function (response) {
+                    alert(response.responseText)
+                },
+                failure: function (response) {
+                    alert(response.responseText)
+                }
+
+            });
+        },
+        select: function (e, i) {
+            $("#hfcustom").val(i.item.val);
+            /*document.getElementById("hfcustom").style.marginTop = 10px;*/
+        },
+        minLength: 1
+    });
+    });
        /* $('#next').click(function (c) {
             console.log("click");
             location.href = '/Account/Login/';
@@ -17,7 +40,7 @@ $(document).ready(function () {
             *//*event.preventDefault();*//*
         });*/
 
-       
+    
     });
 
 /*sign_up_btn.addEventListener("click", () => {
@@ -27,3 +50,21 @@ $(document).ready(function () {
 /*sign_in_btn.addEventListener("click", () => {
   container.classList.remove("sign-up-mode");
 })*/;
+function updatecartproduct() {
+   /* debugger;*/
+    console.log();
+    var cartproducts;
+    var exsitingcookie = $.cookie('ProductId');
+    if (exsitingcookie != undefined && exsitingcookie != "" && exsitingcookie != null) {
+        cartproducts = exsitingcookie.split(',');
+    }
+    else {
+        cartproducts = []
+    }
+    $(".item_count").html(cartproducts.length);
+};
+
+/*window.onload = function () {
+    document.getElementById("loader").style.display = "none";
+    document.getElementById("view").style.display = "block";
+};*/

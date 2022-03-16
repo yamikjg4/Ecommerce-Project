@@ -144,6 +144,46 @@ namespace E_Commerce.Migrations
                     b.ToTable("tblproduct");
                 });
 
+            modelBuilder.Entity("E_Commerce.Models.TBLorder", b =>
+                {
+                    b.Property<int>("orderid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ad_id")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("payment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("product_id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("qtys")
+                        .HasColumnType("int");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("totalpay")
+                        .HasColumnType("int");
+
+                    b.Property<string>("userid")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("orderid");
+
+                    b.HasIndex("ad_id");
+
+                    b.HasIndex("product_id");
+
+                    b.ToTable("tblorder");
+                });
+
             modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
                 {
                     b.Property<int>("ad_id")
@@ -328,6 +368,21 @@ namespace E_Commerce.Migrations
                     b.Navigation("category");
                 });
 
+            modelBuilder.Entity("E_Commerce.Models.TBLorder", b =>
+                {
+                    b.HasOne("E_Commerce.Models.tblAddress", "Address")
+                        .WithMany("ord")
+                        .HasForeignKey("ad_id");
+
+                    b.HasOne("E_Commerce.Models.Product", "prd")
+                        .WithMany("ord")
+                        .HasForeignKey("product_id");
+
+                    b.Navigation("Address");
+
+                    b.Navigation("prd");
+                });
+
             modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
                 {
                     b.HasOne("E_Commerce.Models.ApplicationUser", "user")
@@ -386,6 +441,16 @@ namespace E_Commerce.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("E_Commerce.Models.Product", b =>
+                {
+                    b.Navigation("ord");
+                });
+
+            modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
+                {
+                    b.Navigation("ord");
                 });
 #pragma warning restore 612, 618
         }

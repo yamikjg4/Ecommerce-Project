@@ -10,12 +10,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Edit Profile</h1>
+                   @* <h1 class="m-0">Edit Profile</h1>*@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Add Category</li>
+                        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Admin" asp-area="Admin">Home</a></li>
+                        <li class="breadcrumb-item active">Edit Admin</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -28,24 +28,24 @@
             <!-- Small boxes (Stat box) -->
             <div class="row d-flex justify-content-center">
                 <!--Add category code-->
-                <div class="col-md-4">
+                <div class="col-md-8">
                     <form asp-action="EditProfile" asp-controller="Admin" asp-area="Admin" method="post" enctype="multipart/form-data">
                         <input type="hidden" asp-for="Id" />
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
 
-                            <label asp-for="fname" class="control-label"></label>
+                            <label asp-for="fname" class="control-label">User Name</label>
                             <input asp-for="fname" class="form-control" placeholder="Full Name" />
                             <span asp-validation-for="fname" style="color:red;"></span>
 
                         </div>
                         <div class="form-group">
-                            <label asp-for="UserName" class="control-label"></label>
-                            <input asp-for="UserName" class="form-control" placeholder="Email" disabled />
+                            <label asp-for="UserName" class="control-label">Email Id</label>
+                            <input asp-for="UserName" class="form-control" placeholder="Email" disable />
                             <span asp-validation-for="UserName" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="PhoneNumber" class="control-label"></label>
+                            <label asp-for="PhoneNumber" class="control-label">Mobile</label>
                             <input type="number" asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>

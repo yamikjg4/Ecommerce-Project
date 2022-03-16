@@ -9,7 +9,7 @@ namespace E_Commerce.Models
     public class tblAddress
     {
         [Key]
-        public int ad_id { get; set; }
+        public int ad_id{ get; set; }
         [Required,Display(Name ="Name")]
 
        /* [DataType(DataType.Na)]*/
@@ -31,5 +31,6 @@ namespace E_Commerce.Models
         public string State { get; set; }
         public string Id { get; set; }
         public ApplicationUser user { get; set; }
+        public virtual ICollection<TBLorder> ord { get; set; }
     }
 }

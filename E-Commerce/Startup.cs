@@ -4,6 +4,7 @@ using E_Commerce.repositry;
 using E_Commerce.services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,7 @@ namespace E_Commerce
         {
             services.AddControllersWithViews();
             services.AddDbContext<Eshopcontext>(option => option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<Eshopcontext>().AddDefaultTokenProviders();
             services.Configure<SMTPConfigModel>(Configuration.GetSection("SMTPConfig"));
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -76,6 +78,7 @@ namespace E_Commerce
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+           
 
             app.UseEndpoints(endpoints =>
             {
