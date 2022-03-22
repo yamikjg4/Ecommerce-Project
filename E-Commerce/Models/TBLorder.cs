@@ -12,6 +12,7 @@ namespace E_Commerce.Models
         [Key]
         public int orderid { get; set; }
         [ForeignKey("Address")]
+      [Required, Display(Name ="Address")]
       
         public int? ad_id { get; set; }
         [ForeignKey("prd")]

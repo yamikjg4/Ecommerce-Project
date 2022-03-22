@@ -1,0 +1,49 @@
+﻿@model E_Commerce.Models.TBLorder
+
+@{
+    ViewData["Title"] = "getdetails";
+    Layout = "~/Views/Shared/_custdash.cshtml";
+}
+<style>
+    span {
+        font-weight: 100;
+        font-size: 14px;
+        font-family: Roboto,Arial,sans-serif;
+    }
+    p {
+        font-size: 14px;
+        font-family:Roboto,Arial,sans-serif;
+    }
+    </style>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="index" asp-controller="Home">Home</a></li>
+        <li class="breadcrumb-item"><a asp-action="EditProfile">My Account</a></li>
+        <li class="breadcrumb-item" aria-current="page"><a asp-action="orders" asp-controller="home">My Order</a></li>
+        <li class="breadcrumb-item active">Ord:@Model.orderid</li>
+    </ol>
+</nav>
+<div class="card card-body mx-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-7">
+                <div class="row">
+                    <div class="col-md-4 col-6"><img src="~/Products/@Model.prd.ImageFile" class="img-fluid" style="height:100%;max-height:125px; width:100%;"></div>
+                    <div class="col-md-8 col-6">
+                        <span>@Model.prd.Product_name</span><br />
+                        <span>Qty:@Model.qtys</span><br />
+                        <span>Rs.@Model.totalpay</span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-12 col-md-5">
+                <p style="font-weight:600;">Delivery Address</p>
+                <p class="font-weight-bold">@Model.Address.name</p>
+                <p style="white-space:pre-wrap;">@Model.Address.Address,@Model.Address.City-@Model.Address.pincode,@Model.Address.State</p>
+                <p>Contact No:@Model.Address.Phone</p>
+            </div>
+
+        </div>
+    </div>
+</div>

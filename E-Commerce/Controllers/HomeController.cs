@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
 using System;
@@ -21,7 +22,7 @@ namespace E_Commerce.Controllers
         private readonly IAccountrepostry _accountrepostry;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IHttpContextAccessor _https;
-        public HomeController(IProductRepositry prd, UserManager<ApplicationUser> usermanager, Eshopcontext db, IAccountrepostry accountrepostry, IHttpContextAccessor http ,SignInManager<ApplicationUser> signInManager)
+        public HomeController(IProductRepositry prd, UserManager<ApplicationUser> usermanager, Eshopcontext db, IAccountrepostry accountrepostry, IHttpContextAccessor http, SignInManager<ApplicationUser> signInManager)
         {
             _signInManager = signInManager;
             _usermanager = usermanager;
@@ -31,7 +32,7 @@ namespace E_Commerce.Controllers
             _accountrepostry = accountrepostry;
         }
         List<Cart> li = new List<Cart>();
-   
+
         public IActionResult Index(int pagenumber = 1, string search = "")
         {
             TempData["search"] = search;
@@ -136,12 +137,13 @@ namespace E_Commerce.Controllers
 
             return View(res);
         }
-        [Authorize(Roles ="Customer")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> EditProfile(string id)
         {
             TempData["getid"] = _usermanager.GetUserId(HttpContext.User);
-            if (string.IsNullOrEmpty(id)) {
-            
+            if (string.IsNullOrEmpty(id))
+            {
+
                 var ids = TempData["getid"];
                 id = Convert.ToString(ids);
             }
@@ -185,7 +187,7 @@ namespace E_Commerce.Controllers
                         await _signInManager.RefreshSignInAsync(user);
                         ViewBag.status = true;
                         ViewBag.alertmesaage = "Update Succesfully";
-                    /*    await _accountrepostry.logoutsync();*/
+                        /*    await _accountrepostry.logoutsync();*/
                         return RedirectToAction("login", "Account");
                     }
                     else
@@ -211,13 +213,13 @@ namespace E_Commerce.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> changepassword(ChangePasswordModel change,string id)
+        public async Task<IActionResult> changepassword(ChangePasswordModel change, string id)
         {
             if (ModelState.IsValid)
             {
 
                 var user = await _usermanager.FindByIdAsync(id.Trim());
-               var res= await _usermanager.ChangePasswordAsync(user,change.Currentpassword,change.Newpassword);
+                var res = await _usermanager.ChangePasswordAsync(user, change.Currentpassword, change.Newpassword);
                 if (res.Succeeded)
                 {
                     ModelState.Clear();
@@ -238,8 +240,8 @@ namespace E_Commerce.Controllers
         }
         public IActionResult ManageAddress()
         {
-           var user= _usermanager.GetUserId(HttpContext.User);
-            return View(_db.tblAddresses.Where(x=>x.Id==user).ToList());
+            var user = _usermanager.GetUserId(HttpContext.User);
+            return View(_db.tblAddresses.Where(x => x.Id == user).ToList());
         }
         public IActionResult Create()
         {
@@ -269,7 +271,7 @@ namespace E_Commerce.Controllers
         }
         public IActionResult EditAddress(int id)
         {
-            return View(_db.tblAddresses.Where(x=>x.ad_id==id).FirstOrDefault());
+            return View(_db.tblAddresses.Where(x => x.ad_id == id).FirstOrDefault());
         }
         [HttpPost]
         public async Task<IActionResult> EditAddress(tblAddress model)
@@ -287,7 +289,7 @@ namespace E_Commerce.Controllers
                     pincode = model.pincode,
                     City = model.City,
                     State = model.State,
-                    Id=user
+                    Id = user
                 };
 
                 _db.tblAddresses.Update(ads);
@@ -306,37 +308,37 @@ namespace E_Commerce.Controllers
             await _db.SaveChangesAsync();
             return RedirectToAction("ManageAddress");
         }
-        
+
         public IActionResult cart(string cart)
         {
 
             Cart cartmodel = new Cart();
-            
-                            
-                var cartproduct = Request.Cookies["ProductId"];
-                      
-                if (cartproduct !="")
-                {
-                    var prdids = cartproduct;
-                    var id = prdids.Split(',');
-                
-                    cartmodel.cartprouctid = id.Select(x => int.Parse(x)).ToList();
 
-                    cartmodel.cartproduct = GetProducts(cartmodel.cartprouctid);
-                }
-            else 
+
+            var cartproduct = Request.Cookies["ProductId"];
+
+            if (!(string.IsNullOrEmpty(cartproduct)))
+            {
+                var prdids = cartproduct;
+                var id = prdids.Split(',');
+
+                cartmodel.cartprouctid = id.Select(x => int.Parse(x)).ToList();
+
+                cartmodel.cartproduct = GetProducts(cartmodel.cartprouctid);
+            }
+            else
             {
                 return View();
             }
-            
+
             return View(cartmodel);
         }
-       
+
         public JsonResult getoutput(string Prefix)
         {
-            
-        /*    search = Convert.ToString(TempData["search"]);*/
-           List<Category> categories = _db.tblcategory.ToList();
+
+            /*    search = Convert.ToString(TempData["search"]);*/
+            List<Category> categories = _db.tblcategory.ToList();
             List<Product> products = _db.tblproduct.ToList();
 
             var product = (from i in _db.tblproduct
@@ -361,10 +363,10 @@ namespace E_Commerce.Controllers
         {
             Cart cartmodel = new Cart();
 
-
+            
             var cartproduct = Request.Cookies["ProductId"];
 
-            if (cartproduct != "")
+            if (!(string.IsNullOrEmpty(cartproduct)))
             {
                 var prdids = cartproduct;
                 var id = prdids.Split(',');
@@ -372,79 +374,100 @@ namespace E_Commerce.Controllers
                 cartmodel.cartprouctid = id.Select(x => int.Parse(x)).ToList();
 
                 cartmodel.cartproduct = GetProducts(cartmodel.cartprouctid);
-                ViewBag.sum=cartmodel.cartproduct.Sum(x => x.product_price * cartmodel.cartprouctid.Where(productid => productid == x.product_id).Count());
-                var userid=_usermanager.GetUserId(HttpContext.User);
-                /*  TempData["getid"] = _usermanager.GetUserId(HttpContext.User);*/
-
-              ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).ToList();
-                
-                 
-                
-                ViewBag.count=_db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).Count();
-            }
-            return View();
-
-        }
-        [HttpPost]
-        public async Task<IActionResult> checkout(int ad_id)
-        {
-            Cart cartmodel = new Cart();
-
-
-            var cartproduct = Request.Cookies["ProductId"];
-
-            if (cartproduct != "")
-            {
-                var prdids = cartproduct;
-                var id = prdids.Split(',');
-
-                cartmodel.cartprouctid = id.Select(x => int.Parse(x)).ToList();
-
-                cartmodel.cartproduct = GetProducts(cartmodel.cartprouctid);
-                ViewBag.sum = cartmodel.cartproduct.Sum(x => x.product_price * cartmodel.cartprouctid.Where(productid => productid == x.product_id).Count());
+                ViewBag.Sum = cartmodel.cartproduct.Sum(x => x.product_price * cartmodel.cartprouctid.Where(productid => productid == x.product_id).Count());
                 var userid = _usermanager.GetUserId(HttpContext.User);
                 /*  TempData["getid"] = _usermanager.GetUserId(HttpContext.User);*/
+
+                ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).ToList();
+
+                
+                ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).Count();
                
-                foreach (var item in cartmodel.cartproduct)
+              
+            }
+        
+
+            if (ViewBag.Sum > 0)
+            {
+                return View();
+            }
+                return RedirectToAction("Index","Home");
+            
+           
+           /* return View();
+*/
+        }
+        [HttpPost]
+        public async Task<IActionResult> checkout(TBLorder ords,int ad_id)
+        {
+
+          
+
+                Cart cartmodel = new Cart();
+
+
+                var cartproduct = Request.Cookies["ProductId"];
+
+                if (!(string.IsNullOrEmpty(cartproduct)))
                 {
-                    TBLorder ord = new TBLorder();
-                    var prd = _db.tblproduct.Where(x => x.product_id == item.product_id).FirstOrDefault();
-                    var productqty = cartmodel.cartprouctid.Where(productid => productid == item.product_id).Count();
-                    ord.qtys = productqty;
-                    if (prd.product_qty>productqty) {
-                        ord.ad_id = ad_id;
-                        /*    ord.Address = ad_id;*/
-                        ord.userid = userid;
-                        ord.product_id = item.product_id;
-                        ord.status = "Pending";
-                        ord.date = DateTime.Now;
+                    var prdids = cartproduct;
+                    var id = prdids.Split(',');
 
-                        ord.totalpay = Convert.ToInt32(productqty * item.product_price);
-                        ord.payment = "COD";
+                    cartmodel.cartprouctid = id.Select(x => int.Parse(x)).ToList();
 
-                        /* prd.product_id = item.product_id;*/
-                        prd.ImageFile = item.ImageFile;
-                        prd.Product_name = item.Product_name;
-                        prd.product_price = item.product_price;
-                        prd.product_desc = item.product_desc;
-                        var qty = item.product_qty - productqty;
-                        prd.product_qty = qty;
+                    cartmodel.cartproduct = GetProducts(cartmodel.cartprouctid);
+                    ViewBag.Sum = cartmodel.cartproduct.Sum(x => x.product_price * cartmodel.cartprouctid.Where(productid => productid == x.product_id).Count());
+                    var userid = _usermanager.GetUserId(HttpContext.User);
+                ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).ToList();
 
-                        await _db.tblorder.AddAsync(ord);
-                        _db.tblproduct.Update(prd);
+
+
+                ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).Count();
+                /*  TempData["getid"] = _usermanager.GetUserId(HttpContext.User);*/
+                if (ModelState.IsValid)
+                {
+                    foreach (var item in cartmodel.cartproduct)
+                    {
+                        TBLorder ord = new TBLorder();
+                        var prd = _db.tblproduct.Where(x => x.product_id == item.product_id).FirstOrDefault();
+                        var productqty = cartmodel.cartprouctid.Where(productid => productid == item.product_id).Count();
+                        ord.qtys = productqty;
+                        if (prd.product_qty > productqty)
+                        {
+                            ord.ad_id = ad_id;
+                            /*    ord.Address = ad_id;*/
+                            ord.userid = userid;
+                            ord.product_id = item.product_id;
+                            ord.status = "Pending";
+                            ord.date = DateTime.Now;
+
+                            ord.totalpay = Convert.ToInt32(productqty * item.product_price);
+                            ord.payment = "COD";
+
+                            /* prd.product_id = item.product_id;*/
+                            prd.ImageFile = item.ImageFile;
+                            prd.Product_name = item.Product_name;
+                            prd.product_price = item.product_price;
+                            prd.product_desc = item.product_desc;
+                            var qty = item.product_qty - productqty;
+                            prd.product_qty = qty;
+
+                            await _db.tblorder.AddAsync(ord);
+                            _db.tblproduct.Update(prd);
+                        }
+
                     }
 
-                }
-                
-             var save=await _db.SaveChangesAsync();
-             if(Convert.ToBoolean(save))
-                {
-                    ViewBag.Message = "Success";
-                  /*  return RedirectToAction("sucessorder");*/
-                }
+                    var save = await _db.SaveChangesAsync();
+                    if (Convert.ToBoolean(save))
+                    {
+                        ViewBag.Message = "Success";
+                        /*  return RedirectToAction("sucessorder");*/
+                        return View();
+                    }
+                   
 
-               
-
+                }
             }
 
             return View();
@@ -461,10 +484,10 @@ namespace E_Commerce.Controllers
         public IActionResult contactus(string uname)
         {
             var user = uname;
-            ViewBag.Message = "Hello "+user+" ,we will get back to you soon. thankyou";
+            ViewBag.Message = "Hello " + user + " ,we will get back to you soon. thankyou";
             return View();
         }
-        [Authorize(Roles ="Customer")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> buynow(int id)
         {
             TempData["id"] = id;
@@ -476,42 +499,164 @@ namespace E_Commerce.Controllers
 
             var product = await _db.tblproduct.FindAsync(id);
             ViewBag.price = product.product_price;
-            return View();
+            if (ViewBag.count > 0) { return View(); }
+            return RedirectToAction("Index","Home");
         }
         [HttpPost]
         [ActionName("buynow")]
-        public async Task<IActionResult> buy(int ad_id)
+        public async Task<IActionResult> buy(TBLorder ords,int ad_id)
         {
-            var product = await _db.tblproduct.FindAsync(TempData["id"]);
+            var id = TempData["id"];
+            TempData.Keep();
             var userid = _usermanager.GetUserId(HttpContext.User);
-
-            TBLorder ord = new TBLorder();
-            ord.ad_id = ad_id;
-            /*    ord.Address = ad_id;*/
-            ord.userid = userid;
-            ord.product_id = product.product_id;
-            ord.status = "Pending";
-            ord.date = DateTime.Now;
-            ord.qtys = 1;
-            ord.totalpay = Convert.ToInt32(product.product_price);
-            ord.payment = "COD";
-
-            product.ImageFile = product.ImageFile;
-            product.Product_name = product.Product_name;
-            product.product_price = product.product_price;
-           product.product_desc = product.product_desc;
-            var qty =  product.product_qty- ord.qtys;
-            product.product_qty = qty;
-
-            await _db.tblorder.AddAsync(ord);
-            _db.tblproduct.Update(product);
-            var check=await _db.SaveChangesAsync();
-            if (Convert.ToBoolean(check))
+            if (ModelState.IsValid)
             {
-                return RedirectToAction("Index");
+                var product = await _db.tblproduct.FindAsync(id);
 
+                TBLorder ord = new TBLorder();
+                ord.ad_id = ad_id;
+                /*    ord.Address = ad_id;*/
+                ord.userid = userid;
+                ord.product_id = product.product_id;
+                ord.status = "Pending";
+                ord.date = DateTime.Now;
+                ord.qtys = 1;
+                ord.totalpay = Convert.ToInt32(product.product_price);
+                ord.payment = "COD";
+
+                product.ImageFile = product.ImageFile;
+                product.Product_name = product.Product_name;
+                product.product_price = product.product_price;
+                product.product_desc = product.product_desc;
+                var qty = product.product_qty - ord.qtys;
+                product.product_qty = qty;
+
+                await _db.tblorder.AddAsync(ord);
+                _db.tblproduct.Update(product);
+                var check = await _db.SaveChangesAsync();
+                if (Convert.ToBoolean(check))
+                {
+                    return RedirectToAction("orders");
+
+                }
             }
+            /*  var userid = _usermanager.GetUserId(HttpContext.User);*/
+            var products = await _db.tblproduct.FindAsync(id);
+            ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).ToList();
+            ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid)).Count();
+
+           /* var product = await _db.tblproduct.FindAsync(TempData["id"]);*/
+            ViewBag.price = products.product_price;
             return View();
+            /*return RedirectToAction("cart");*/
+        }
+        public async Task<IActionResult> orders(string id, int pagenumber = 1, string search = "")
+        {
+            if (id == null) {
+                id=_usermanager.GetUserId(HttpContext.User);
+            }
+            var product = await _db.tblorder.Include(x => x.prd).Where(x => x.userid == id.Trim()).OrderByDescending(x=>x.orderid).ToListAsync();
+            /*  var prds = product.ToList();*/
+            if (!(string.IsNullOrEmpty(search)))
+            {
+                /* var categorys = _db.tblcategory.ToList();*/
+
+                var prd = await _db.tblorder.Include(x => x.prd).Where(x => x.prd.Product_name.Contains(search)).ToListAsync();
+
+
+                if (prd.Count() > 0)
+                {
+                    const int pagesize = 9;
+                    if (pagenumber < 1)
+
+                        pagenumber = 1;
+                    int reccount = prd.Count();
+                    var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                    var recskip = (pagenumber - 1) * pagesize;
+                    var data = prd.Skip(recskip).Take(pager.PageSize).ToList();
+                    this.ViewBag.Pager = pager;
+                    return View(data);
+                    /*return View(prd);*/
+                }
+                else
+                {
+                    ViewBag.alert = "Order Not Found Here";
+                    int pagesize = 9;
+                    if (pagenumber < 1)
+
+                        pagenumber = 1;
+                    int reccount = product.Count();
+                    var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                    var recskip = (pagenumber - 1) * pagesize;
+                    var data = product.Skip(recskip).Take(pager.PageSize).ToList();
+                    this.ViewBag.Pager = pager;
+                    return View(data);
+
+                }
+            }
+
+            else
+            {
+
+                const int pagesize = 9;
+                if (pagenumber < 1)
+                {
+                    pagenumber = 1;
+                }
+                else
+                {
+                    int reccount = product.Count();
+                    var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                    var recskip = (pagenumber - 1) * pagesize;
+                    var data = product.Skip(recskip).Take(pager.PageSize).ToList();
+                    this.ViewBag.Pager = pager;
+                    return View(data);
+                }
+            }
+            return View(product);
+
+        }
+        public JsonResult getoutputs(string Prefix)
+        {
+
+            /*    search = Convert.ToString(TempData["search"]);*/
+          
+
+            var product = _db.tblorder.Include(x => x.prd).Where(x => x.prd.Product_name.Contains(Prefix)).Select(x=>x.prd.Product_name);
+            var json = JsonConvert.SerializeObject(product);
+
+            return Json(product);
+        }
+       public async Task<IActionResult> getdetails(int? id)
+        {
+         
+            return View(await _db.tblorder.Include(x => x.Address).Include(x => x.prd).Where(x => x.orderid == id).FirstOrDefaultAsync());
+        }
+        public async Task<IActionResult> cancelorder(int? id)
+        {
+            var db = await _db.tblorder.Where(x => x.orderid == id).FirstOrDefaultAsync();
+            var dbs = await _db.tblproduct.Where(x => x.product_id == db.product_id).FirstOrDefaultAsync();
+            db.ad_id = db.ad_id;
+            db.product_id = db.product_id;
+            db.qtys = db.qtys;
+            db.userid = db.userid;
+            db.totalpay = db.totalpay;
+            db.status = "Cancel";
+            db.payment = db.payment;
+            db.date = db.date;
+            /*Update Product*/
+            dbs.cat_id = dbs.cat_id;
+            dbs.Product_name = dbs.Product_name;
+            dbs.product_price = dbs.product_price;
+            dbs.product_desc = dbs.product_desc;
+            var qty = dbs.product_qty + db.qtys;
+            dbs.product_qty = qty;
+            dbs.ImageFile = dbs.ImageFile;
+            
+            _db.tblorder.Update(db);
+            _db.tblproduct.Update(dbs);
+            await _db.SaveChangesAsync();
+            return RedirectToAction("orders"); 
         }
     }
 

@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Home";
     Layout = "~/Views/Shared/_custdash.cshtml";
-    int intSno = 0;
+   @* int intSno = 0;*@
     //Search code
 
 
@@ -17,18 +17,23 @@
         pager = ViewBag.Pager;
         pageNo = pager.CurrentPage;
     }}
-
-<div id="carouselExampleControls" class="carousel slide" data-ride="carousel" style="height:500px;">
+<style>
+    #links:hover {
+        text-decoration: none;
+         color: #2874f0;
+    }
+</style>
+<div id="carouselExampleControls" class="carousel slide" data-ride="carousel" style="height:475px;max-height:475px;min-height:auto;">
     <div class="carousel-inner h-100">
         <div class="carousel-item active">
-            <img class="d-block w-100 img-fluid" src="~/Slider/MicrosoftTeams-image.png" alt="First slide" style="height: 500px;" id="img1">
+            <img class="d-block w-100 img-fluid" src="~/Slider/MicrosoftTeams-image.png" alt="First slide" style="height: 475px;max-height:475px;min-height:auto;" id="img1">
 
         </div>
         <div class="carousel-item">
-            <img class="d-block w-100 img-fluid" src="~/Slider/MicrosoftTeams-image (1).png" alt="Second slide" style="height: 500px; " id="img2">
+            <img class="d-block w-100 img-fluid" src="~/Slider/MicrosoftTeams-image (1).png" alt="Second slide" style="height: 475px; max-height: 475px; min-height: auto; " id="img2">
         </div>
         <div class="carousel-item">
-            <img class="d-block w-100 img-fluid" src="~/Slider/MicrosoftTeams-image (2).png" alt="Third slide" style="height:500px;" id="img3">
+            <img class="d-block w-100 img-fluid" src="~/Slider/MicrosoftTeams-image (2).png" alt="Third slide" style="height: 475px; max-height: 475px; min-height: auto;" id="img3">
         </div>
     </div>
     <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
@@ -49,29 +54,38 @@
             <div class="row">
                 @foreach (var item in Model)
                 {
-                    <div class="col-md-12 col-lg-4  mb-4 mb-md-2" id="datasearching">
+                 
+                <div class="col-md-12 col-lg-4  mb-4 mb-md-2" id="datasearching">
+                    <a id="links" asp-action="viewproduct" asp-controller="Home" asp-route-id="@item.products.product_id" asp-route-catid="@item.products.cat_id">
                         <div class="card" style="height:100%;">
                             <img src="~/Products/@item.products.ImageFile"
                                  class="card-img-top img-fluid"
-                                 alt="Laptop" style="max-height:240px;min-height:auto;" />
+                                 alt="Laptop" style="max-height:240px;min-height:auto;height:240px;" />
                             <div class="card-body">
-                                <div class="d-flex justify-content-between mb-3">
-                                    <h5 class="mb-0">@item.products.Product_name</h5>
-                                    <h5 class="text-dark mb-0">Rs.@item.products.product_price</h5>
+                                @*<div class="d-flex justify-content-between mb-3">*@
+                                <div class="row">
+                                    <div class="col-md-12 col-12  text-center text-justify">
+                                        <h5 class="mb-0">@item.products.Product_name</h5>
+                                    </div>
+                                    <div class="col-md-12 col-12  text-center">
+                                        <h5 class="text-dark mb-0">Rs.@item.products.product_price</h5>
+                                    </div>
                                 </div>
-                                <div class="d-flex justify-content-center mb-3 text-center">
-                                    <a asp-action="viewproduct" asp-controller="Home" class="btn btn-primary product-btn" asp-route-id="@item.products.product_id" asp-route-catid="@item.products.cat_id">View Product</a>
-                                    @* <button type="button" class="btn btn-outline-primary">Add to cart</button>*@
+                                @* </div>*@
+                                <!--<div class="d-flex justify-content-center text-center">-->
+                                @* <button type="button" class="btn btn-outline-primary">Add to cart</button>*@
 
 
 
-                                </div>
+                                <!--</div>-->
                             </div>
                         </div>
-                    </div>
-                }
+                    </a>
+                </div>
+                       
+                        }
 
-            </div>
+                </div>
             <div class="pt-3">
                 @if (pager.TotalPages > 1)
                 {

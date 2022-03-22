@@ -42,6 +42,7 @@ namespace E_Commerce.Areas.Admin.Controllers
             ViewBag.q2 = _db.tblproduct.Count();
             ViewBag.q1 = _db.tblcategory.Count();
             ViewBag.q3 = _accountrepostry.getcount();
+            ViewBag.q4 = _db.tblorder.Where(x => x.status == "Deliver").Sum(x=>x.totalpay);
             return View();
         }
         [Route("AddProduct")]
