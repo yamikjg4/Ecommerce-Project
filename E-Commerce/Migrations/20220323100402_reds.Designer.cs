@@ -4,14 +4,16 @@ using E_Commerce.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace E_Commerce.Migrations
 {
     [DbContext(typeof(Eshopcontext))]
-    partial class EshopcontextModelSnapshot : ModelSnapshot
+    [Migration("20220323100402_reds")]
+    partial class reds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,6 +156,9 @@ namespace E_Commerce.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("TBLorderorderid")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ad_id")
                         .IsRequired()
                         .HasColumnType("int");
@@ -180,26 +185,13 @@ namespace E_Commerce.Migrations
 
                     b.HasIndex("Id");
 
+                    b.HasIndex("TBLorderorderid");
+
                     b.HasIndex("ad_id");
 
                     b.HasIndex("product_id");
 
                     b.ToTable("tblorder");
-                });
-
-            modelBuilder.Entity("E_Commerce.Models.status", b =>
-                {
-                    b.Property<int>("statusid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("statusname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("statusid");
-
-                    b.ToTable("tblstatus");
                 });
 
             modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
@@ -392,6 +384,10 @@ namespace E_Commerce.Migrations
                         .WithMany("ord")
                         .HasForeignKey("Id");
 
+                    b.HasOne("E_Commerce.Models.TBLorder", null)
+                        .WithMany("ord")
+                        .HasForeignKey("TBLorderorderid");
+
                     b.HasOne("E_Commerce.Models.tblAddress", "Address")
                         .WithMany("ord")
                         .HasForeignKey("ad_id")
@@ -475,6 +471,11 @@ namespace E_Commerce.Migrations
                 });
 
             modelBuilder.Entity("E_Commerce.Models.Product", b =>
+                {
+                    b.Navigation("ord");
+                });
+
+            modelBuilder.Entity("E_Commerce.Models.TBLorder", b =>
                 {
                     b.Navigation("ord");
                 });

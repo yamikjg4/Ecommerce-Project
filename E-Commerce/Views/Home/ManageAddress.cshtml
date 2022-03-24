@@ -41,7 +41,7 @@ font-weight:500;
                     <div style="display: flex; margin: auto 0; justify-content: space-between;">
                         <p> @item.name @item.Phone </p>
 
-                        <form  asp-controller="Home" asp-action="DeleteAddress" asp-route-id="@item.ad_id" method="post">
+                        <form asp-controller="Home" asp-action="DeleteAddress" asp-route-id="@item.ad_id" method="post">
                             <div class="btn-group">
                                 <a asp-action="EditAddress" asp-route-id="@item.ad_id" class="btn  btn-link"><i class="fa fa-edit"></i></a>
                                 <button type="submit" class="btn btn-link border-0 d-inline" onclick="return functionConfirm(this)">
@@ -52,10 +52,10 @@ font-weight:500;
                             </div>
                         </form>
 
-                       @* <div class="linkaddress">
-                            <a asp-action="EditAddress" asp-route-id="@item.ad_id" class="text-primary"><i class="fas fa-edit"></i></a>
-                            <a asp-action="DeleteAddress" asp-route-id="@item.ad_id" class="text-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                        </div>*@
+                        @* <div class="linkaddress">
+                                <a asp-action="EditAddress" asp-route-id="@item.ad_id" class="text-primary"><i class="fas fa-edit"></i></a>
+                                <a asp-action="DeleteAddress" asp-route-id="@item.ad_id" class="text-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
+                            </div>*@
                     </div>
                     <p> @item.Address,<br><b>@item.pincode</b></p>
                 </div>
@@ -78,10 +78,10 @@ font-weight:500;
             .then((willDelete) => {
                 if (willDelete) {
                     $('form').submit();
-                 
+
                     swal("Category Deleted Succesfully", {
                         icon: "success",
-                        timer:3000,
+                        timer: 3000,
                     });
                     return true;
                 } else {
@@ -93,3 +93,31 @@ font-weight:500;
 
     }
 </script>
+@if (TempData["alert"] != null)
+{
+    <script>
+        $.toast({
+            heading: 'Success',
+            showHideTransition: 'slide',
+            icon: 'success',
+            text: '@TempData["alert"]',
+            position: 'bottom-right',
+            stack: false
+        })
+    </script>
+
+}
+@if (TempData["read"] != null)
+{
+    <script>
+        $.toast({
+            heading: 'error',
+            showHideTransition: 'slide',
+            icon: 'error',
+            text: '@TempData["read"]',
+            position: 'bottom-right',
+            stack: false
+        })
+    </script>
+
+}

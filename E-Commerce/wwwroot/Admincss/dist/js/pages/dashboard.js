@@ -18,6 +18,34 @@ $(function () {
     forcePlaceholderSize: true,
     zIndex: 999999
   })
+    $("#search2").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/Home/getoutput",
+                type: "POST",
+                dataType: "json",
+                data: { Prefix: request.term },
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return item;
+                    }))
+
+                },
+                error: function (response) {
+                    alert(response.responseText)
+                },
+                failure: function (response) {
+                    alert(response.responseText)
+                }
+
+            });
+        },
+        select: function (e, i) {
+            $("#hfcustom").val(i.item.val);
+            /*document.getElementById("hfcustom").style.marginTop = 10px;*/
+        },
+        minLength: 1
+    });
   $('.connectedSortable .card-header').css('cursor', 'move')
 
   // jQuery UI sortable for the todo list

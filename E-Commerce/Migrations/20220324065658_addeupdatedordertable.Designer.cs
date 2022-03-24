@@ -4,14 +4,16 @@ using E_Commerce.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace E_Commerce.Migrations
 {
     [DbContext(typeof(Eshopcontext))]
-    partial class EshopcontextModelSnapshot : ModelSnapshot
+    [Migration("20220324065658_addeupdatedordertable")]
+    partial class addeupdatedordertable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,19 +189,47 @@ namespace E_Commerce.Migrations
                     b.ToTable("tblorder");
                 });
 
-            modelBuilder.Entity("E_Commerce.Models.status", b =>
+            modelBuilder.Entity("E_Commerce.Models.TBLorderUpdated", b =>
                 {
-                    b.Property<int>("statusid")
+                    b.Property<int>("orderid")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("statusname")
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("ad_id")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("payment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("statusid");
+                    b.Property<int?>("product_id")
+                        .HasColumnType("int");
 
-                    b.ToTable("tblstatus");
+                    b.Property<int?>("qtys")
+                        .HasColumnType("int");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("totalpay")
+                        .HasColumnType("int");
+
+                    b.HasKey("orderid");
+
+                    b.HasIndex("Id");
+
+                    b.HasIndex("ad_id");
+
+                    b.HasIndex("product_id");
+
+                    b.ToTable("tblorderupdated");
                 });
 
             modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
@@ -400,6 +430,29 @@ namespace E_Commerce.Migrations
 
                     b.HasOne("E_Commerce.Models.Product", "prd")
                         .WithMany("ord")
+                        .HasForeignKey("product_id");
+
+                    b.Navigation("Address");
+
+                    b.Navigation("prd");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("E_Commerce.Models.TBLorderUpdated", b =>
+                {
+                    b.HasOne("E_Commerce.Models.ApplicationUser", "user")
+                        .WithMany()
+                        .HasForeignKey("Id");
+
+                    b.HasOne("E_Commerce.Models.tblAddress", "Address")
+                        .WithMany()
+                        .HasForeignKey("ad_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("E_Commerce.Models.Product", "prd")
+                        .WithMany()
                         .HasForeignKey("product_id");
 
                     b.Navigation("Address");

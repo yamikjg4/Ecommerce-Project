@@ -38,101 +38,111 @@
 
 
     <div class="card  w-75 mx-auto">
-        <div class="card-header text-center">
+               <div class="card-header text-center">
             <h3>View User</h3>
         </div>
-        <div class="card-body w-auto table-responsive">
+               <div class="card-body w-auto table-responsive">
+                   <form asp-action="viewuser" asp-controller="Admin" asp-area="Admin">
 
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>
-                            Fullname
-                        </th>
-                        <th>
-                           Email-Id
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.PhoneNumber)
-                        </th>
+                       <div class="input-group">
+                           <input type="search" name="search" id="search3" class="form-control" placeholder="Search Product" aria-label="Search" aria-describedby="search-addon" style="" />
+                           <input type="hidden" id="hfcustom1" name="Product_name" />
+                           <button type="submit" class="btn btn-primary" onclick=""><i class="fa fa-search" aria-hidden="true"></i></button>
 
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{int i=1;}
-                    
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@(i++)</td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.fname)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.UserName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.PhoneNumber)
-                            </td>
-
-                            <td>
-                                <form asp-area="Admin" asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@item.Id" method="post">
+                       </div>
+                   </form>
 
 
-                                    <button type="submit" class="btn btn-link border-0 d-inline" onclick="return functionConfirm(this)">
-                                        <span class="text-danger">
-                                            <i class="fa fa-trash"></i>
-                                        </span>
-                                    </button>
+                   <table class="table table-striped">
+                       <thead>
+                           <tr>
+                               <th>Id</th>
+                               <th>
+                                   Fullname
+                               </th>
+                               <th>
+                                   Email-Id
+                               </th>
+                               <th>
+                                   @Html.DisplayNameFor(model => model.PhoneNumber)
+                               </th>
 
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="container">
-                @if (pager.TotalPages > 1)
-                {
-                    <ul class="pagination justify-content-start">
+                               <th>Action</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           @{int i = 1;}
 
-                        @if (pager.CurrentPage > 1)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="1">First</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage-1)">Previous</a>
-                            </li>
-                        }
+                           @foreach (var item in Model)
+                           {
+                               <tr>
+                                   <td>@(i++)</td>
+                                   <td>
+                                       @Html.DisplayFor(modelItem => item.fname)
+                                   </td>
+                                   <td>
+                                       @Html.DisplayFor(modelItem => item.UserName)
+                                   </td>
+                                   <td>
+                                       @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                   </td>
 
-
-                        @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
-                        {
-                            <li class="page-item @(pge==pager.CurrentPage?"active":"")">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@pge">@pge</a>
-                            </li>
-                        }
-
-                        @if (pager.CurrentPage < pager.TotalPages)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage+1)">Next</a>
-                            </li>
-                            <li>
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@(pager.TotalPages)">Last</a>
-                            </li>
-
-                        }
+                                   <td>
+                                       <form asp-area="Admin" asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@item.Id" method="post">
 
 
-                    </ul>
-                }
-            </div>
-        </div>
-        
+                                           <button type="submit" class="btn btn-link border-0 d-inline" onclick="return functionConfirm(this)">
+                                               <span class="text-danger">
+                                                   <i class="fa fa-trash"></i>
+                                               </span>
+                                           </button>
+
+                                       </form>
+                                   </td>
+                               </tr>
+                           }
+                       </tbody>
+                   </table>
+                   <div class="container">
+                       @if (pager.TotalPages > 1)
+                       {
+                           <ul class="pagination justify-content-start">
+
+                               @if (pager.CurrentPage > 1)
+                               {
+                                   <li class="page-item">
+                                       <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="1">First</a>
+                                   </li>
+                                   <li class="page-item">
+                                       <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage-1)">Previous</a>
+                                   </li>
+                               }
+
+
+                               @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                               {
+                                   <li class="page-item @(pge==pager.CurrentPage?"active":"")">
+                                       <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@pge">@pge</a>
+                                   </li>
+                               }
+
+                               @if (pager.CurrentPage < pager.TotalPages)
+                               {
+                                   <li class="page-item">
+                                       <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage+1)">Next</a>
+                                   </li>
+                                   <li>
+                                       <a class="page-link" asp-controller="Admin" asp-action="ViewUser" asp-area="Admin" asp-route-pagenumber="@(pager.TotalPages)">Last</a>
+                                   </li>
+
+                               }
+
+
+                           </ul>
+                       }
+                   </div>
+               </div>
+
     </div>
 
 </div>
@@ -170,3 +180,10 @@
         return false;
     }
 </script>
+@if (ViewBag.alert != null)
+{
+    <script>
+    swal("@ViewBag.alert", "You clicked the button!", "error");
+    </script>
+}
+

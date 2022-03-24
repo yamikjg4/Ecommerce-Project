@@ -42,7 +42,7 @@ namespace E_Commerce.Areas.Admin.Controllers
             ViewBag.q2 = _db.tblproduct.Count();
             ViewBag.q1 = _db.tblcategory.Count();
             ViewBag.q3 = _accountrepostry.getcount();
-            ViewBag.q4 = _db.tblorder.Where(x => x.status == "Deliver").Sum(x=>x.totalpay);
+            ViewBag.q4 = _db.tblorder.Where(x => x.status == "Deliver").Sum(x => x.totalpay);
             return View();
         }
         [Route("AddProduct")]
@@ -104,14 +104,13 @@ namespace E_Commerce.Areas.Admin.Controllers
 
         }
         [Route("ViewProduct")]
-        public IActionResult ViewProduct(int pagenumber = 1)
+        public IActionResult ViewProduct(int pagenumber = 1, string search = "")
         {
             List<Category> categories = _db.tblcategory.ToList();
             List<Product> products = _db.tblproduct.ToList();
-            /* List<Category_Product> cat;*/
             var product = from e1 in categories
                           join e2 in products on e1.cat_id equals e2.cat_id into tabel1
-                          from e2 in tabel1.ToList().OrderBy(x => x.product_id)
+                          from e2 in tabel1.ToList()
                           select new Category_Product
                           {
                               categories = e1,
@@ -119,18 +118,74 @@ namespace E_Commerce.Areas.Admin.Controllers
 
                           };
 
-            const int pagesize = 5;
-            if (pagenumber < 1)
+            if (!(string.IsNullOrEmpty(search)))
+            {
+                /* var categorys = _db.tblcategory.ToList();*/
 
-                pagenumber = 1;
-            int reccount = product.Count();
-            var pager = new PagenatedList(reccount, pagenumber, pagesize);
-            var recskip = (pagenumber - 1) * pagesize;
-            var data = product.Skip(recskip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-            return View(data);
-            /*return View(product);*/
-        }
+                var prd = from e1 in categories
+                          join e2 in products on e1.cat_id equals e2.cat_id into tabel1
+                          from e2 in tabel1.Where(x => e1.category_name == search || x.Product_name.Contains(search))
+                          .ToList()
+                          select new Category_Product
+                          {
+                              categories = e1,
+                              products = e2
+
+                          };
+
+
+                if (prd.Count() > 0)
+                {
+                    const int pagesize = 9;
+                    if (pagenumber < 1)
+
+                        pagenumber = 1;
+                    int reccount = prd.Count();
+                    var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                    var recskip = (pagenumber - 1) * pagesize;
+                    var data = prd.Skip(recskip).Take(pager.PageSize).ToList();
+                    this.ViewBag.Pager = pager;
+                    return View(data);
+                    /*return View(prd);*/
+                }
+                else
+                {
+                    ViewBag.alert = "Product Not Found Here";
+                    int pagesize = 9;
+                    if (pagenumber < 1)
+
+                        pagenumber = 1;
+                    int reccount = product.Count();
+                    var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                    var recskip = (pagenumber - 1) * pagesize;
+                    var data = product.Skip(recskip).Take(pager.PageSize).ToList();
+                    this.ViewBag.Pager = pager;
+                    return View(data);
+
+                }
+            }
+
+            else
+            {
+
+                const int pagesize = 9;
+                if (pagenumber < 1)
+                {
+                    pagenumber = 1;
+                }
+                else
+                {
+                    int reccount = product.Count();
+                    var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                    var recskip = (pagenumber - 1) * pagesize;
+                    var data = product.Skip(recskip).Take(pager.PageSize).ToList();
+                    this.ViewBag.Pager = pager;
+                    return View(data);
+                }
+            }
+            return View(product);
+        }            /*return View(product);*/
+    
         //get
         /* [HttpGet]*/
         [Route("AddCategory")]
@@ -368,24 +423,58 @@ namespace E_Commerce.Areas.Admin.Controllers
 
         }
         [Route("ViewUser")]
-        public IActionResult viewuser(int pagenumber = 1)
+        public IActionResult viewuser(int pagenumber = 1,string search="")
         {
-           /* string ids = _usermanager.GetUserId(HttpContext.User);*/
-        /*   var id = TempData["getid"];*/
-
-
             var user = _accountrepostry.alluser();
-            const int pagesize = 10;
-            if (pagenumber < 1)
+            /* string ids = _usermanager.GetUserId(HttpContext.User);*/
+            if (!(string.IsNullOrEmpty(search)))
+            {
+                var prd = _usermanager.Users.Where(x => x.fname.Contains(search)).ToList();
+                if (prd.Count() > 0)
+                {
+                    const int pagesize = 9;
+                    if (pagenumber < 1)
 
-                pagenumber = 1;
-            int reccount = user.Count();
-            var pager = new PagenatedList(reccount, pagenumber, pagesize);
-            var recskip = (pagenumber - 1) * pagesize;
-            var data = user.Skip(recskip).Take(pager.PageSize).ToList();
-            this.ViewBag.Pager = pager;
-            return View(data);
-            /*  return View(_accountrepostry.alluser());*/
+                        pagenumber = 1;
+                    int reccount = prd.Count();
+                    var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                    var recskip = (pagenumber - 1) * pagesize;
+                    var data = prd.Skip(recskip).Take(pager.PageSize).ToList();
+                    this.ViewBag.Pager = pager;
+                    return View(data);
+                    /*return View(prd);*/
+                }
+                else
+                {
+                    ViewBag.alert = "User Not Found Here";
+                    int pagesize = 9;
+                    if (pagenumber < 1)
+
+                        pagenumber = 1;
+                    int reccount = user.Count();
+                    var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                    var recskip = (pagenumber - 1) * pagesize;
+                    var data = user.Skip(recskip).Take(pager.PageSize).ToList();
+                    this.ViewBag.Pager = pager;
+                    return View(data);
+
+                }
+            }
+            else {
+               
+                const int pagesize = 10;
+                if (pagenumber < 1)
+
+                    pagenumber = 1;
+                int reccount = user.Count();
+                var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                var recskip = (pagenumber - 1) * pagesize;
+                var data = user.Skip(recskip).Take(pager.PageSize).ToList();
+                this.ViewBag.Pager = pager;
+                return View(data);
+                /*  return View(_accountrepostry.alluser());*/
+            }
+            return View(user);
         }
         [Route("DeleteUser")]
         public async Task<IActionResult> DeleteUser(string id)
@@ -493,6 +582,94 @@ namespace E_Commerce.Areas.Admin.Controllers
             _accountrepostry.logoutsync();
             return RedirectToAction("Index", "Home");
         }
+        [Route("viewpayment")]
+        public IActionResult viewpayment(int pagenumber=1)
+        {
+           var categories =_db.tblorder.Include(x=>x.prd).Include(x=>x.Address).Include(x=>x.user).Where(x=>x.status=="Deliver").ToList();
+            const int pagesize = 5;
+            if (pagenumber < 1)
 
+                pagenumber = 1;
+            int reccount = categories.Count();
+            var pager = new PagenatedList(reccount, pagenumber, pagesize);
+            var recskip = (pagenumber - 1) * pagesize;
+            var data = categories.Skip(recskip).Take(pager.PageSize).ToList();
+            this.ViewBag.Pager = pager;
+            return View(data);
+         /*   return View();*/
+        }
+        [Route("manageorder")]
+        public IActionResult manageorder(int? ids,int pagenumber = 1, string search = "")
+        {
+
+            
+            var categories = _db.tblorder.Include(x => x.prd).Include(x => x.Address).Include(x => x.user).OrderByDescending(x => x.orderid).ToList();
+            if (!string.IsNullOrEmpty(search) || ids!=null ) {
+                var prd = _db.tblorder.Include(x => x.prd).Include(x => x.Address).Include(x => x.user).Where(x=>x.orderid==ids || x.status==search).ToList();
+                if (prd.Count() > 0)
+                {
+                    const int pagesize = 9;
+                    if (pagenumber < 1)
+
+                        pagenumber = 1;
+                    int reccount = prd.Count();
+                    var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                    var recskip = (pagenumber - 1) * pagesize;
+                    var data = prd.Skip(recskip).Take(pager.PageSize).ToList();
+                    this.ViewBag.Pager = pager;
+                    return View(data);
+                    /*return View(prd);*/
+                }
+                else
+                {
+                    ViewBag.alert = "Order Detail Not Found Here";
+                    int pagesize = 9;
+                    if (pagenumber < 1)
+
+                        pagenumber = 1;
+                    int reccount = categories.Count();
+                    var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                    var recskip = (pagenumber - 1) * pagesize;
+                    var data = categories.Skip(recskip).Take(pager.PageSize).ToList();
+                    this.ViewBag.Pager = pager;
+                    return View(data);
+
+                }
+
+            }
+            else
+            {
+                /*var categories = _db.tblorder.Include(x => x.prd).Include(x => x.Address).Include(x => x.user).OrderByDescending(x => x.orderid).ToList();
+*/                const int pagesize = 5;
+                if (pagenumber < 1)
+
+                    pagenumber = 1;
+                int reccount = categories.Count();
+                var pager = new PagenatedList(reccount, pagenumber, pagesize);
+                var recskip = (pagenumber - 1) * pagesize;
+                var data = categories.Skip(recskip).Take(pager.PageSize).ToList();
+                this.ViewBag.Pager = pager;
+                return View(data);
+            }
+  /*          return View(categories)*/;
+        }
+        [HttpPost]
+        [Route("updatestatus")]
+        public async Task<IActionResult> updatestatus(int id,TBLorder ords)
+        {
+            var det=await _db.tblorder.FindAsync(id);
+            if (det != null)
+            {
+                det.status = ords.status;
+                _db.tblorder.Update(det);
+                await _db.SaveChangesAsync();
+                return RedirectToAction("manageorder", "Admin", new { Areas = "Admin" });
+            }
+            else
+            {
+                return RedirectToAction("manageorder","Admin",new {Areas="Admin" });
+            }
+
+        }
     }
 }

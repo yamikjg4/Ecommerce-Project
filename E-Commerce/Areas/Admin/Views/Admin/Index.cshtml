@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Admin.cshtml";
 }
@@ -81,12 +80,12 @@
                             @if (ViewBag.q4 == null) {<span> Rs 0</span>}
                             else { <span>RS.@(ViewBag.q4)</span>}</h3>
 
-                            <p>Unique Visitors</p>
+                            <p>Payment</p>
                         </div>
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                         </div>
-                        <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a asp-action="viewpayment" asp-controller="Admin" asp-area="Admin" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
                 <!-- ./col -->

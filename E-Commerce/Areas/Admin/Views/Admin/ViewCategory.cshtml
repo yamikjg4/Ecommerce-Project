@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "ViewCategory";
     Layout = "~/Areas/Admin/Views/Shared/_Admin.cshtml";
-    int intSno = 0;
+    @*int intSno = 0;*@
     //Search code
 
 
@@ -46,8 +46,7 @@
             <h3>View Category</h3>
         </div>
         <div class="card-body w-auto table-responsive">
-
-            <table class="table  table-striped">
+                       <table class="table  table-striped">
                 <thead>
                     <tr>
                         <th>
@@ -84,13 +83,13 @@
                                     </div>
                                 </form>
                                 @* <form asp-action="deletecategory" asp-controller="Admin" asp-area="Admin" asp-route-id="@item.cat_id" method="post">
-                                        <a asp-action="EditCategory" asp-controller="Admin" asp-area="Admin" asp-route-id="@item.cat_id" class="btn  btn-link"><i class="fa fa-edit"></i></a>
-                                        <button type="submit" class="btn btn-link border-0 d-inline" onclick="return functionConfirm(this)">
-                                            <span class="text-danger">
-                                                <i class="fa fa-trash"></i>
-                                            </span>
-                                        </button>
-                                    </form>*@
+                                <a asp-action="EditCategory" asp-controller="Admin" asp-area="Admin" asp-route-id="@item.cat_id" class="btn  btn-link"><i class="fa fa-edit"></i></a>
+                                <button type="submit" class="btn btn-link border-0 d-inline" onclick="return functionConfirm(this)">
+                                    <span class="text-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </span>
+                                </button>
+                            </form>*@
 
                             </td>
                         </tr>

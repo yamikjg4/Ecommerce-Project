@@ -29,10 +29,33 @@
             <div class="col-12 col-md-7">
                 <div class="row">
                     <div class="col-md-4 col-6"><img src="~/Products/@Model.prd.ImageFile" class="img-fluid" style="height:100%;max-height:125px; width:100%;"></div>
-                    <div class="col-md-8 col-6">
+                    <div class="col-md-4 col-6">
                         <span>@Model.prd.Product_name</span><br />
                         <span>Qty:@Model.qtys</span><br />
                         <span>Rs.@Model.totalpay</span>
+                    </div>
+                    <div class="col-md-4 col-12">
+                        @if (Model.status == "Cancel")
+                        {
+
+                            <ul style="color:red">
+                                <li><span class="text-danger">Status:@Model.status </span></li>
+                            </ul>
+                        }
+                        else if (Model.status == "Pending")
+                        {
+
+                            <ul style="color:orange">
+                                <li><span style="color:orange">Status:@Model.status </span></li>
+                            </ul>
+                        }
+                        else if (Model.status == "Dispatch" || Model.status == "OutOfDelivery" || Model.status == "Deliver")
+                        {
+
+                            <ul style="color:green">
+                                <li><span style="color:green;">Status:@Model.status </span></li>
+                            </ul>
+                        }
                     </div>
 
                 </div>

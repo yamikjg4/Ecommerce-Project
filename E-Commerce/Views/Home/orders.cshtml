@@ -72,7 +72,7 @@
                                 }
 
                                 <br>Order-Date:@item.date.ToString("dd/MM/yyyy")
-                                @if (item.status == "Pending")
+                                @if (item.status == "Pending" || item.status== "Dispatch")
                                 {
                                     @*<br><a asp-action="cancelorder" id="link1" class="btn btn-danger btn-sm text-light"><i class="fa fa-window-close" aria-hidden="true"></i>&nbsp; Cancel Order</a>*@
 
@@ -84,7 +84,7 @@
                                 {
 
                                 }
-                                else
+                                else if(item.status == "OutOfDelivery")
                                 {
                                     <br><span class="text-danger">Can't Order Cancel</span>
                                 }
@@ -145,8 +145,27 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 @if (ViewBag.alert != null)
 {
-    <script>
-        swal("@ViewBag.alert", "Please Click This Button!", "error");
-    </script>
+<script>
+       @* swal("@ViewBag.alert", "Please Click This Button!", "error");*@
+    $.toast({
+        position: 'bottom-right',
+            heading: 'Error',
+            text: '@ViewBag.alert',
+            showHideTransition: 'fade',
+            icon: 'error'
+        })
+</script>
 
+}
+@if (TempData["message"] != null) { 
+    <script>
+        $.toast({
+            heading: 'Success',
+            showHideTransition: 'slide',
+            icon: 'success',
+            text: '@TempData["message"]',
+            position: 'bottom-right',
+            stack: false
+        })
+        </script>
 }

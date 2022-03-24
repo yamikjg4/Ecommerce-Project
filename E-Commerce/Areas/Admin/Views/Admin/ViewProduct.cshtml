@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "ViewProduct";
     Layout = "~/Areas/Admin/Views/Shared/_Admin.cshtml";
-    int intSno = 0;
+    @*int intSno = 0;*@
     //Search code
 
 
@@ -47,6 +47,16 @@
             <h3>View Product</h3>
         </div>
         <div class="card-body w-auto table-responsive">
+            <form asp-action="ViewProduct" asp-controller="Admin" asp-area="Admin">
+
+                <div class="input-group">
+                    <input type="search" name="search" id="search3" class="form-control" placeholder="Search Product" aria-label="Search" aria-describedby="search-addon" style="" />
+                    <input type="hidden" id="hfcustom1" name="Product_name" />
+                    <button type="submit" class="btn btn-primary" onclick=""><i class="fa fa-search" aria-hidden="true"></i></button>
+
+                </div>
+            </form>
+
 
             <table class="table table-striped">
                 <thead>
@@ -92,7 +102,7 @@
                                 Rs.@Html.DisplayFor(modelItem => item.products.product_price)
                             </td>
                             <td>
-                              @*  @Html.DisplayFor(modelItem => item.products.product_desc)*@
+                                @*  @Html.DisplayFor(modelItem => item.products.product_desc)*@
                                 @Html.Raw(item.products.product_desc)
                             </td>
                             <td>
@@ -195,3 +205,10 @@
         return false;
     }
 </script>
+@if (ViewBag.alert != null)
+{
+    <script>
+    swal("@ViewBag.alert", "You clicked the button!", "error");
+    </script>
+}
+

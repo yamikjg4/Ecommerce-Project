@@ -10,24 +10,25 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css" />
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="~/css/toast.css" />
 
     <title>@ViewData["Title"]</title>
-    
-    
+
+
     <link rel="stylesheet" href="~/Customer/style.css" />
     <style>
-        .nav-link{
-            font-size:16px !important;
-           font-family:Roboto,Arial,sans-serif !important;
+        .nav-link {
+            font-size: 16px !important;
+            font-family: Roboto,Arial,sans-serif !important;
         }
-        #select:hover{
-            border:none;
+
+        #select:hover {
+            border: none;
         }
-        li.nav-item
-        {
-            padding-right:15px;
+
+        li.nav-item {
+            padding-right: 15px;
         }
-    
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -36,6 +37,7 @@
     <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js" integrity="sha256-6XMVI0zB8cRzfZjqKcD01PBsAy3FlDASrlC8SxCpInY=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script type="text/javascript" src="~/js/toast.js"></script>
     <script src="~/js/app.js"></script>
 </head>
 
@@ -326,6 +328,7 @@
 
 
     <script>
+        
         $("#a_id").click(function () {
 
             swal({

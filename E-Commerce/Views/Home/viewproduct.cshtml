@@ -56,19 +56,19 @@
             width: 100%;
             height: 100%;
         }
-
+   
 
 </style>
 
 <div class="container-fluid py-auto">
-    <div class="col-lg-12  p-3 main-section bg-white">
+    <div class="col-lg-10  p-3 main-section bg-white">
        @* <div class="row hedding m-0 pl-3 pt-0 pb-3">
             Product Detail
         </div>*@
         <div class="row m-0">
             <div class="col-lg-4 left-side-product-box pb-3">
 
-                <img src="~/Products/@Model.ImageFile" class="border p-3 img-fluid" height="350px" width="100%" style="min-height:250px; max-height:350px;">
+                <img src="~/Products/@Model.ImageFile" class="border p-3 img-fluid" height="350" width="100" style="min-height:250px; max-height:350px;">
 
             </div>
             <div class="col-lg-8">
@@ -194,7 +194,15 @@
         @*products.append(productid);*@
         $.cookie('ProductId', products.join(','), { expires: 365, path: '/' });
         updatecartproduct();
-        swal("Add To Cart Successfully", "You clicked the button!", "success");
+        $.toast({
+            heading: 'Success',
+            showHideTransition: 'slide',
+            icon: 'success',
+            text: 'Add To Cart Successfully',
+            position: 'bottom-right',
+            stack: false
+        })
+       @* swal("Add To Cart Successfully", "You clicked the button!", "success");*@
         @*$('.item_count').html(function (i, val) { return val * 1 + 1 });*@
         console.log("ok");
        

@@ -1,0 +1,191 @@
+﻿@model IEnumerable<E_Commerce.Models.TBLorder>
+
+@{
+    ViewData["Title"] = "ManageOrder";
+    Layout = "~/Areas/Admin/Views/Shared/_Admin.cshtml";
+    PagenatedList pager = new PagenatedList();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+
+<div class="content-wrapper" style="width:auto">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    @*<h1 class="m-0">View Category</h1>*@
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">ManageOrder</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+
+
+
+    <div class="card  w-75 mx-auto">
+        <div class="card-header text-center">
+            <h3>ManageOrder</h3>
+        </div>
+        <div class="card-body w-auto table-responsive">
+            <form asp-action="manageorder" asp-controller="Admin" asp-area="Admin">
+                <div class="row">
+                    <div class="col-4">
+                        <input type="search" name="ids" id="search3" class="form-control" placeholder="Search OrderId" aria-label="Search" aria-describedby="search-addon" style="" />
+                        <input type="hidden" id="hfcustom1" name="Product_name" />
+
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <input type="search" name="search" id="search3" class="form-control" placeholder="Search Status" aria-label="Search" aria-describedby="search-addon" style="" />
+                            <input type="hidden" id="hfcustom1" name="Product_name" />
+
+
+                        </div>
+                    </div>
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-primary" onclick="" style="width:100%;"><i class="fa fa-search" aria-hidden="true"></i>Search</button>
+                        </div>
+                     
+                    </div>
+            </form>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.orderid)
+                        </th>
+                        <th>
+                            User Name
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.prd.ImageFile)
+                        </th>
+                        <th>
+                            Delivery Address
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.prd.Product_name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.qtys)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.status)
+                        </th>
+                        <th>
+                            Reaction
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.orderid)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.user.fname)
+
+                            </td>
+                            <td>
+                                @*  @Html.DisplayFor(modelItem => item.prd.ImageFile )*@
+                                <img src="~/Products/@item.prd.ImageFile" style="height:85px;width:100%;" />
+                            </td>
+                            <td>
+
+                                @item.Address.name,@item.Address.Phone
+                                <br>@item.Address.Address,@item.Address.pincode,@item.Address.City,@item.Address.State
+                            </td>
+                            <td>
+                                Rs.@Html.DisplayFor(modelItem => item.totalpay)
+                            </td>
+                            <td>
+                                @*  @Html.DisplayFor(modelItem => item.products.product_desc)*@
+                                @Html.Raw(item.qtys)
+                            </td>
+                            <form asp-action="updatestatus" asp-controller="Admin" asp-area="Admin" asp-route-id="@item.orderid" method="post">
+                            <td>
+                                @if (item.status != "Cancel")
+                                {
+                                <select name="status" id="cars" asp-for="@item.status" style="border:1px solid gray; padding:3px 14px;">
+                                    <option value="Pending">Pending</option>
+                                  @*  <option value="Pending"></option>*@
+                                    <option value="Dispatch">Dispatch</option>
+                                    <option value="OutOfDelivery">OutOfDelivery</option>
+                                    <option value="Deliver">Deliver</option>
+                                </select>
+                                }
+                                else if (item.status == "Cancel")
+                {
+                            <span class="text-danger"> @Html.DisplayFor(modelitem => item.status)</span>
+                }
+                            </td>
+                            <td>
+                                <button type="submit" class="bg-primary"><i class='fa fa-edit'></i></button>
+                            </td>
+                            </form>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="container">
+                @if (pager.TotalPages > 1)
+                {
+                    <ul class="pagination justify-content-start">
+
+                        @if (pager.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="1">First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage-1)">Previous</a>
+                            </li>
+                        }
+
+
+                        @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+                        {
+                            <li class="page-item @(pge==pager.CurrentPage?"active":"")">
+                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@pge">@pge</a>
+                            </li>
+                        }
+
+                        @if (pager.CurrentPage < pager.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage+1)">Next</a>
+                            </li>
+                            <li>
+                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@(pager.TotalPages)">Last</a>
+                            </li>
+
+                        }
+
+
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+    @if (ViewBag.alert != null)
+    {
+        <script>
+    swal("@ViewBag.alert", "You clicked the button!", "error");
+        </script>
+    }

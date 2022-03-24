@@ -54,11 +54,34 @@
 
 
 
-@if (@ViewBag.alertmesaage != null && @ViewBag.status != null)
+@*@if (TempData["alert"] != null)
 {
     <script>
-
-    swal("@ViewBag.alertmesaage ", "You clicked Ok Button!", "@(ViewBag.status?"success":"error")");
+        $.toast({
+            heading: 'Success',
+            showHideTransition: 'slide',
+            icon: 'success',
+            text: '@TempData["alert"]',
+            position: 'bottom-right',
+            stack: false
+        })
     </script>
-}
 
+}*@
+@if (TempData["alertread"] != null)
+{
+    <script>
+        $.toast({
+            heading: 'error',
+            showHideTransition: 'slide',
+            icon: 'error',
+            text: '@TempData["alertread"]',
+            position: 'bottom-right',
+            stack: false
+        })
+    </script>
+
+}
+@{
+    TempData.Keep();
+}

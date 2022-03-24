@@ -186,14 +186,15 @@ namespace E_Commerce.Controllers
                     {
                         await _signInManager.RefreshSignInAsync(user);
                         ViewBag.status = true;
-                        ViewBag.alertmesaage = "Update Succesfully";
+                        TempData["AlertMessage"] = "Update Succesfully";
+                        TempData.Keep();
                         /*    await _accountrepostry.logoutsync();*/
-                        return RedirectToAction("login", "Account");
+                        return View();
                     }
                     else
                     {
                         ViewBag.status = false;
-                        ViewBag.alertmesaage = "Profile Update Fail";
+                        TempData["AlertMessages"] = "Profile Update Fail";
                         return View(user);
                     }
                 }
@@ -224,18 +225,18 @@ namespace E_Commerce.Controllers
                 {
                     ModelState.Clear();
                     ViewBag.status = true;
-                    ViewBag.alertmesaage = "Password Update Succesfully";
+                    TempData["Password"] = "Password Update Succesfully";
+                    TempData.Keep();
                     return View();
                 }
-                ViewBag.status = false;
-                ViewBag.alertmesaage = "Password Update Fail";
+                TempData["error"] = "Password Update Fail";
+                TempData.Keep();
                 foreach (var result in res.Errors)
                 {
                     ModelState.AddModelError("", result.Description);
                 }
             }
-            ViewBag.status = false;
-            ViewBag.alertmesaage = "Password Update Fail";
+            
             return View(change);
         }
         public IActionResult ManageAddress()
@@ -291,22 +292,33 @@ namespace E_Commerce.Controllers
                     State = model.State,
                     Id = user
                 };
-
                 _db.tblAddresses.Update(ads);
                 await _db.SaveChangesAsync();
                 ViewBag.status = true;
-                ViewBag.alertmesaage = "Update sucessfully";
+                TempData["alert"] = "Update sucessfully";
+                TempData.Keep();
                 return RedirectToAction("ManageAddress", "Home");
             }
             ViewBag.status = false;
-            ViewBag.alertmesaage = "Something Wrong!!";
+            TempData["alertread"] = "Something Wrong!!";
+            TempData.Keep();
             return View(model);
         }
         public async Task<IActionResult> DeleteAddress(int id)
         {
             _db.tblAddresses.Remove(await _db.tblAddresses.FindAsync(id));
-            await _db.SaveChangesAsync();
-            return RedirectToAction("ManageAddress");
+            var res=await _db.SaveChangesAsync();
+            if (Convert.ToBoolean(res))
+            {
+                TempData["alert"] = "Delete Address Successfully";
+                TempData.Keep();
+                return RedirectToAction("ManageAddress");
+            }
+            else
+            {
+                TempData["read"] = "Delete Address UnSuccessfully";
+                return View();
+            }
         }
 
         public IActionResult cart(string cart)
@@ -436,7 +448,7 @@ namespace E_Commerce.Controllers
                         {
                             ord.ad_id = ad_id;
                             /*    ord.Address = ad_id;*/
-                            ord.userid = userid;
+                            ord.Id = userid;
                             ord.product_id = item.product_id;
                             ord.status = "Pending";
                             ord.date = DateTime.Now;
@@ -463,6 +475,8 @@ namespace E_Commerce.Controllers
                     {
                         ViewBag.Message = "Success";
                         /*  return RedirectToAction("sucessorder");*/
+                        TempData["message"] = "Order Placed Successfully";
+                        TempData.Keep();
                         return View();
                     }
                    
@@ -516,7 +530,7 @@ namespace E_Commerce.Controllers
                 TBLorder ord = new TBLorder();
                 ord.ad_id = ad_id;
                 /*    ord.Address = ad_id;*/
-                ord.userid = userid;
+                ord.Id = userid;
                 ord.product_id = product.product_id;
                 ord.status = "Pending";
                 ord.date = DateTime.Now;
@@ -536,6 +550,8 @@ namespace E_Commerce.Controllers
                 var check = await _db.SaveChangesAsync();
                 if (Convert.ToBoolean(check))
                 {
+                    TempData["message"] = "Order Placed Successfully";
+                    TempData.Keep();
                     return RedirectToAction("orders");
 
                 }
@@ -555,7 +571,7 @@ namespace E_Commerce.Controllers
             if (id == null) {
                 id=_usermanager.GetUserId(HttpContext.User);
             }
-            var product = await _db.tblorder.Include(x => x.prd).Where(x => x.userid == id.Trim()).OrderByDescending(x=>x.orderid).ToListAsync();
+            var product = await _db.tblorder.Include(x => x.prd).Where(x => x.Id == id.Trim()).OrderByDescending(x=>x.orderid).ToListAsync();
             /*  var prds = product.ToList();*/
             if (!(string.IsNullOrEmpty(search)))
             {
@@ -627,19 +643,19 @@ namespace E_Commerce.Controllers
 
             return Json(product);
         }
-       public async Task<IActionResult> getdetails(int? id)
+       public async Task<IActionResult> getdetails(int id)
         {
          
             return View(await _db.tblorder.Include(x => x.Address).Include(x => x.prd).Where(x => x.orderid == id).FirstOrDefaultAsync());
         }
-        public async Task<IActionResult> cancelorder(int? id)
+        public async Task<IActionResult> cancelorder(int id)
         {
             var db = await _db.tblorder.Where(x => x.orderid == id).FirstOrDefaultAsync();
             var dbs = await _db.tblproduct.Where(x => x.product_id == db.product_id).FirstOrDefaultAsync();
             db.ad_id = db.ad_id;
             db.product_id = db.product_id;
             db.qtys = db.qtys;
-            db.userid = db.userid;
+            db.Id = db.Id;
             db.totalpay = db.totalpay;
             db.status = "Cancel";
             db.payment = db.payment;
@@ -656,6 +672,8 @@ namespace E_Commerce.Controllers
             _db.tblorder.Update(db);
             _db.tblproduct.Update(dbs);
             await _db.SaveChangesAsync();
+            TempData["message"] = "Cancel Ordeer Successfully";
+            TempData.Keep();
             return RedirectToAction("orders"); 
         }
     }

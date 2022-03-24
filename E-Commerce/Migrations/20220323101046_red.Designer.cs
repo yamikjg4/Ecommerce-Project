@@ -4,14 +4,16 @@ using E_Commerce.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace E_Commerce.Migrations
 {
     [DbContext(typeof(Eshopcontext))]
-    partial class EshopcontextModelSnapshot : ModelSnapshot
+    [Migration("20220323101046_red")]
+    partial class red
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,6 +163,9 @@ namespace E_Commerce.Migrations
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("orderid1")
+                        .HasColumnType("int");
+
                     b.Property<string>("payment")
                         .HasColumnType("nvarchar(max)");
 
@@ -182,24 +187,11 @@ namespace E_Commerce.Migrations
 
                     b.HasIndex("ad_id");
 
+                    b.HasIndex("orderid1");
+
                     b.HasIndex("product_id");
 
                     b.ToTable("tblorder");
-                });
-
-            modelBuilder.Entity("E_Commerce.Models.status", b =>
-                {
-                    b.Property<int>("statusid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("statusname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("statusid");
-
-                    b.ToTable("tblstatus");
                 });
 
             modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
@@ -398,11 +390,17 @@ namespace E_Commerce.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("E_Commerce.Models.TBLorder", "ord")
+                        .WithMany()
+                        .HasForeignKey("orderid1");
+
                     b.HasOne("E_Commerce.Models.Product", "prd")
                         .WithMany("ord")
                         .HasForeignKey("product_id");
 
                     b.Navigation("Address");
+
+                    b.Navigation("ord");
 
                     b.Navigation("prd");
 

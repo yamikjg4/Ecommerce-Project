@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Models
 {
-    public class TBLorder
+    public class TBLorderUpdated
     {
         [Key]
         /*[DatabaseGenerated(DatabaseGeneratedOption.Identity)]*/
@@ -31,6 +31,5 @@ namespace E_Commerce.Models
         public virtual tblAddress Address { get; set; }
         public virtual Product prd { get; set; }
         public virtual ApplicationUser user { get; set; }
-
     }
 }

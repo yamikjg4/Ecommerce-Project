@@ -4,14 +4,16 @@ using E_Commerce.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace E_Commerce.Migrations
 {
     [DbContext(typeof(Eshopcontext))]
-    partial class EshopcontextModelSnapshot : ModelSnapshot
+    [Migration("20220324063853_updatedordertable")]
+    partial class updatedordertable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -185,21 +187,6 @@ namespace E_Commerce.Migrations
                     b.HasIndex("product_id");
 
                     b.ToTable("tblorder");
-                });
-
-            modelBuilder.Entity("E_Commerce.Models.status", b =>
-                {
-                    b.Property<int>("statusid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("statusname")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("statusid");
-
-                    b.ToTable("tblstatus");
                 });
 
             modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
