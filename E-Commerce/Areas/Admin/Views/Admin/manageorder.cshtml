@@ -56,11 +56,11 @@
 
                         </div>
                     </div>
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-primary" onclick="" style="width:100%;"><i class="fa fa-search" aria-hidden="true"></i>Search</button>
-                        </div>
-                     
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-primary" onclick="" style="width:100%;"><i class="fa fa-search" aria-hidden="true"></i>Search</button>
                     </div>
+
+                </div>
             </form>
             <table class="table table-striped">
                 <thead>
@@ -120,23 +120,26 @@
                             </td>
                             <form asp-action="updatestatus" asp-controller="Admin" asp-area="Admin" asp-route-id="@item.orderid" method="post">
                             <td>
-                                @if (item.status != "Cancel")
+                                @if (item.status == "Deliver")
                                 {
-                                <select name="status" id="cars" asp-for="@item.status" style="border:1px solid gray; padding:3px 14px;">
-                                    <option value="Pending">Pending</option>
-                                  @*  <option value="Pending"></option>*@
-                                    <option value="Dispatch">Dispatch</option>
-                                    <option value="OutOfDelivery">OutOfDelivery</option>
-                                    <option value="Deliver">Deliver</option>
-                                </select>
+                                <span class="text-success"> @Html.DisplayFor(modelitem => item.status)</span>
                                 }
                                 else if (item.status == "Cancel")
-                {
-                            <span class="text-danger"> @Html.DisplayFor(modelitem => item.status)</span>
-                }
+                                {
+                                    <span class="text-danger"> @Html.DisplayFor(modelitem => item.status)</span>
+                                }
+                else { 
+      <select name="status" id="cars" asp-for="@item.status" style="border:1px solid gray; padding:3px 14px;">
+    <option value="Pending">Pending</option>
+    @*  <option value="Pending"></option>*@
+    <option value="Dispatch">Dispatch</option>
+    <option value="OutOfDelivery">OutOfDelivery</option>
+    <option value="Deliver">Deliver</option>
+</select>
+                                }
                             </td>
                             <td>
-                                <button type="submit" class="bg-primary"><i class='fa fa-edit'></i></button>
+                                <button type="submit" class="bg-primary" onclick="submitCustom(e)"><i class='fa fa-edit'></i></button>
                             </td>
                             </form>
                         </tr>
@@ -151,10 +154,10 @@
                         @if (pager.CurrentPage > 1)
                         {
                             <li class="page-item">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="1">First</a>
+                                <a class="page-link" asp-controller="Admin" asp-action="manageorder" asp-area="Admin" asp-route-pagenumber="1">First</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage-1)">Previous</a>
+                                <a class="page-link" asp-controller="Admin" asp-action="manageorder" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage-1)">Previous</a>
                             </li>
                         }
 
@@ -162,17 +165,17 @@
                         @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
                         {
                             <li class="page-item @(pge==pager.CurrentPage?"active":"")">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@pge">@pge</a>
+                                <a class="page-link" asp-controller="Admin" asp-action="manageorder" asp-area="Admin" asp-route-pagenumber="@pge">@pge</a>
                             </li>
                         }
 
                         @if (pager.CurrentPage < pager.TotalPages)
                         {
                             <li class="page-item">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage+1)">Next</a>
+                                <a class="page-link" asp-controller="Admin" asp-action="manageorder" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage+1)">Next</a>
                             </li>
                             <li>
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@(pager.TotalPages)">Last</a>
+                                <a class="page-link" asp-controller="Admin" asp-action="manageorder" asp-area="Admin" asp-route-pagenumber="@(pager.TotalPages)">Last</a>
                             </li>
 
                         }
@@ -189,3 +192,9 @@
     swal("@ViewBag.alert", "You clicked the button!", "error");
         </script>
     }
+    <script>
+        function submitCustom(e) {
+            e.preventDefault();
+
+        }
+    </script>

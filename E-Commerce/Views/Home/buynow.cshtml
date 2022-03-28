@@ -28,7 +28,10 @@
                     }
                     else if (ViewBag.count == 0)
                     {
-                        <div class="card card-body text-center">Please Add Address Right Now</div>
+                <div class="card card-body text-center">
+                    Please Add Address Right Now
+                    <a asp-action="Create" asp-controller="Home" class="btn btn-success btn-sm">Add Address</a>
+                </div>
                     }
 
                     <div class="card-footer"><div align="right"><button type="submit" class="btn text-light" onclick="submitcustom(e)" style="background-color:orangered">Payment</button></div></div>

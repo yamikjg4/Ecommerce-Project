@@ -21,6 +21,7 @@ namespace E_Commerce.Models
         public string Phone { get; set; }
         [Required]
         [Display(Name ="Pincode")]
+        [RegularExpression(@"^[0-9]{6}$",ErrorMessage ="Please Enter Valid Pincode")]
         public int? pincode { get; set; }
         [Required,Display(Name ="Address")]
         [DataType(DataType.MultilineText)]

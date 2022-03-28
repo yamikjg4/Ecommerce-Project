@@ -116,10 +116,10 @@
                         @if (pager.CurrentPage > 1)
                         {
                             <li class="page-item">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="1">First</a>
+                                <a class="page-link" asp-controller="Admin" asp-action="viewpayment" asp-area="Admin" asp-route-pagenumber="1">First</a>
                             </li>
                             <li class="page-item">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage-1)">Previous</a>
+                                <a class="page-link" asp-controller="Admin" asp-action="viewpayment" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage-1)">Previous</a>
                             </li>
                         }
 
@@ -127,17 +127,17 @@
                         @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
                         {
                             <li class="page-item @(pge==pager.CurrentPage?"active":"")">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@pge">@pge</a>
+                                <a class="page-link" asp-controller="Admin" asp-action="viewpayment" asp-area="Admin" asp-route-pagenumber="@pge">@pge</a>
                             </li>
                         }
 
                         @if (pager.CurrentPage < pager.TotalPages)
                         {
                             <li class="page-item">
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage+1)">Next</a>
+                                <a class="page-link" asp-controller="Admin" asp-action="viewpayment" asp-area="Admin" asp-route-pagenumber="@(pager.CurrentPage+1)">Next</a>
                             </li>
                             <li>
-                                <a class="page-link" asp-controller="Admin" asp-action="ViewProduct" asp-area="Admin" asp-route-pagenumber="@(pager.TotalPages)">Last</a>
+                                <a class="page-link" asp-controller="Admin" asp-action="viewpayment" asp-area="Admin" asp-route-pagenumber="@(pager.TotalPages)">Last</a>
                             </li>
 
                         }

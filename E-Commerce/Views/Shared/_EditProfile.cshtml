@@ -28,12 +28,12 @@
 <body>
     <div class="height-100 bg-light py-3">
         <div class="container-fluid">
-            <div class="row gutters">
-                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
                     <div class="card h-100 mx-auto">
                         <div class="card-body">
 
-                            <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+                            <nav id="sidebarMenu" class="collapse d-block sidebar collapse bg-white">
                                 <div class="position-sticky">
                                     <div class="list-group list-group-flush mx-3 mt-4">
                                         <a asp-action="EditProfile" asp-controller="Home" asp-route-id="@TempData["getid"]" class="list-group-item list-group-item-action py-2 ripple">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12">
+                <div class="col-xl-8 col-lg-8 col-md-12 col-sm-12 col-12 mb-2">
                     
                         @RenderBody()
                         @*<div class="card-body">

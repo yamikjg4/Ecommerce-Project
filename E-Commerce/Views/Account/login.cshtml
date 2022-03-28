@@ -31,7 +31,7 @@
             </div>
             <a asp-controller="Account" asp-action="ForgotPassword">Forgot Password</a>
             <div class="form-group">
-                <input type="submit" value="Login" class="btn solid" />
+                <input type="submit" value="Login" class="btn solid" onclick="submitcustom(e)" />
             </div>
         </form>
     </div>
@@ -57,7 +57,12 @@
 @if (@ViewBag.alertmesaage != null && @ViewBag.status != null)
 {
     <script>
-
     swal("@ViewBag.alertmesaage ", "You clicked Ok Button!", "@(ViewBag.status?"success":"error")");
     </script>
 }
+<script>
+    function submitCustom(e) {
+        e.preventDefault();
+
+    }
+</script>

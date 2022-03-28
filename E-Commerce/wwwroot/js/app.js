@@ -98,3 +98,6 @@ function updatecartproduct() {
     document.getElementById("loader").style.display = "none";
     document.getElementById("view").style.display = "block";
 };*/
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}

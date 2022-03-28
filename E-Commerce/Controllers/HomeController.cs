@@ -131,8 +131,8 @@ namespace E_Commerce.Controllers
         {
             var res = await _prd.getdetail(id);
 
-            ViewBag.prd = _db.tblproduct.Where(x => x.product_id != id && x.cat_id == catid).ToList();
-            var cat = _db.tblcategory.Where(x => x.cat_id == catid).FirstOrDefault();
+            ViewBag.prd = await _db.tblproduct.Where(x => x.product_id != id && x.cat_id == catid).ToListAsync();
+            var cat = await _db.tblcategory.Where(x => x.cat_id == catid).FirstOrDefaultAsync();
             ViewBag.catid = cat.category_name;
 
             return View(res);
@@ -146,8 +146,10 @@ namespace E_Commerce.Controllers
 
                 var ids = TempData["getid"];
                 id = Convert.ToString(ids);
-            }
+               
+           }
             return View(await _usermanager.FindByIdAsync(id.Trim()));
+
         }
         [HttpPost]
         public async Task<IActionResult> EditProfile(string id, string UserName, string fname, string PhoneNumber)
@@ -189,6 +191,7 @@ namespace E_Commerce.Controllers
                         TempData["AlertMessage"] = "Update Succesfully";
                         TempData.Keep();
                         /*    await _accountrepostry.logoutsync();*/
+                        /*ModelState.Clear();*/
                         return View();
                     }
                     else
@@ -467,6 +470,11 @@ namespace E_Commerce.Controllers
                             await _db.tblorder.AddAsync(ord);
                             _db.tblproduct.Update(prd);
                         }
+                       
+                            TempData["toastmessage"] = "Out Of Stock";
+                            TempData.Keep();
+                          /*  return View();*/
+                      
 
                     }
 
@@ -497,8 +505,11 @@ namespace E_Commerce.Controllers
         [HttpPost]
         public IActionResult contactus(string uname)
         {
-            var user = uname;
-            ViewBag.Message = "Hello " + user + " ,we will get back to you soon. thankyou";
+            if (ModelState.IsValid)
+            {
+                var user = uname;
+                ViewBag.Message = "Hello " + user + " ,we will get back to you soon. thankyou";
+            }
             return View();
         }
         [Authorize(Roles = "Customer")]
@@ -513,8 +524,19 @@ namespace E_Commerce.Controllers
 
             var product = await _db.tblproduct.FindAsync(id);
             ViewBag.price = product.product_price;
-            if (ViewBag.count > 0) { return View(); }
-            return RedirectToAction("Index","Home");
+
+            if (ViewBag.count > 0)
+            {
+                return View();
+            }
+            else if (ViewBag.Address != null)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
         [HttpPost]
         [ActionName("buynow")]

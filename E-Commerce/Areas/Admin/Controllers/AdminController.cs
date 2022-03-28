@@ -474,7 +474,7 @@ namespace E_Commerce.Areas.Admin.Controllers
                 return View(data);
                 /*  return View(_accountrepostry.alluser());*/
             }
-            return View(user);
+           /* return View(user);*/
         }
         [Route("DeleteUser")]
         public async Task<IActionResult> DeleteUser(string id)
