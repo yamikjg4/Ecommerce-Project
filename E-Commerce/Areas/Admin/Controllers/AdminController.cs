@@ -39,7 +39,7 @@ namespace E_Commerce.Areas.Admin.Controllers
         {
             TempData["getid"] = _usermanager.GetUserId(HttpContext.User);
             var id = TempData["getid"];
-            ViewBag.q2 = _db.tblproduct.Count();
+            ViewBag.q2 = _db.tblproduct.Where(x=>x.prd_status==1).Count();
             ViewBag.q1 = _db.tblcategory.Count();
             ViewBag.q3 = _accountrepostry.getcount();
             ViewBag.q4 = _db.tblorder.Where(x => x.status == "Deliver").Sum(x => x.totalpay);
@@ -111,6 +111,8 @@ namespace E_Commerce.Areas.Admin.Controllers
             var product = from e1 in categories
                           join e2 in products on e1.cat_id equals e2.cat_id into tabel1
                           from e2 in tabel1.ToList()
+                          where e2.prd_status==1
+                          orderby e2.product_id
                           select new Category_Product
                           {
                               categories = e1,
@@ -124,8 +126,9 @@ namespace E_Commerce.Areas.Admin.Controllers
 
                 var prd = from e1 in categories
                           join e2 in products on e1.cat_id equals e2.cat_id into tabel1
-                          from e2 in tabel1.Where(x => e1.category_name == search || x.Product_name.Contains(search))
+                          from e2 in tabel1.Where(x => e1.category_name == search || x.Product_name.Contains(search) && x.prd_status==1)
                           .ToList()
+
                           select new Category_Product
                           {
                               categories = e1,
@@ -185,7 +188,7 @@ namespace E_Commerce.Areas.Admin.Controllers
             }
             return View(product);
         }            /*return View(product);*/
-    
+
         //get
         /* [HttpGet]*/
         [Route("AddCategory")]
@@ -212,7 +215,8 @@ namespace E_Commerce.Areas.Admin.Controllers
 
                     return RedirectToAction("ViewCategory", "Admin", new { area = "Admin" });
                 }
-                else {
+                else
+                {
                     ViewBag.status = false;
                     ViewBag.alertmesaage = "Category Name Allready Exsists";
                     ModelState.Clear();
@@ -326,8 +330,12 @@ namespace E_Commerce.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var del = await _db.tblproduct.Where(x => x.product_id == id).FirstOrDefaultAsync();
-            _db.tblproduct.Remove(del);
-            await _db.SaveChangesAsync();
+            /*   _db.tblproduct.Remove(del);
+               await _db.SaveChangesAsync();*/
+            del.product_id = del.product_id;
+            del.prd_status = 0;
+            _db.tblproduct.Update(del);
+            _db.SaveChanges();
             return RedirectToAction("ViewProduct", "Admin");
         }
         [HttpGet]
@@ -423,7 +431,7 @@ namespace E_Commerce.Areas.Admin.Controllers
 
         }
         [Route("ViewUser")]
-        public IActionResult viewuser(int pagenumber = 1,string search="")
+        public IActionResult viewuser(int pagenumber = 1, string search = "")
         {
             var user = _accountrepostry.alluser();
             /* string ids = _usermanager.GetUserId(HttpContext.User);*/
@@ -460,8 +468,9 @@ namespace E_Commerce.Areas.Admin.Controllers
 
                 }
             }
-            else {
-               
+            else
+            {
+
                 const int pagesize = 10;
                 if (pagenumber < 1)
 
@@ -474,7 +483,7 @@ namespace E_Commerce.Areas.Admin.Controllers
                 return View(data);
                 /*  return View(_accountrepostry.alluser());*/
             }
-           /* return View(user);*/
+            /* return View(user);*/
         }
         [Route("DeleteUser")]
         public async Task<IActionResult> DeleteUser(string id)
@@ -583,9 +592,9 @@ namespace E_Commerce.Areas.Admin.Controllers
             return RedirectToAction("Index", "Home");
         }
         [Route("viewpayment")]
-        public IActionResult viewpayment(int pagenumber=1)
+        public IActionResult viewpayment(int pagenumber = 1)
         {
-           var categories =_db.tblorder.Include(x=>x.prd).Include(x=>x.Address).Include(x=>x.user).Where(x=>x.status=="Deliver").ToList();
+            var categories = _db.tblorder.Include(x => x.prd).Include(x => x.Address).Include(x => x.user).Where(x => x.status == "Deliver").ToList();
             const int pagesize = 5;
             if (pagenumber < 1)
 
@@ -596,16 +605,17 @@ namespace E_Commerce.Areas.Admin.Controllers
             var data = categories.Skip(recskip).Take(pager.PageSize).ToList();
             this.ViewBag.Pager = pager;
             return View(data);
-         /*   return View();*/
+            /*   return View();*/
         }
         [Route("manageorder")]
-        public IActionResult manageorder(int? ids,int pagenumber = 1, string search = "")
+        public IActionResult manageorder(int? ids, int pagenumber = 1, string search = "")
         {
 
-            
+
             var categories = _db.tblorder.Include(x => x.prd).Include(x => x.Address).Include(x => x.user).OrderByDescending(x => x.orderid).ToList();
-            if (!string.IsNullOrEmpty(search) || ids!=null ) {
-                var prd = _db.tblorder.Include(x => x.prd).Include(x => x.Address).Include(x => x.user).Where(x=>x.orderid==ids || x.status==search).ToList();
+            if (!string.IsNullOrEmpty(search) || ids != null)
+            {
+                var prd = _db.tblorder.Include(x => x.prd).Include(x => x.Address).Include(x => x.user).Where(x => x.orderid == ids || x.status == search).ToList();
                 if (prd.Count() > 0)
                 {
                     const int pagesize = 9;
@@ -640,7 +650,8 @@ namespace E_Commerce.Areas.Admin.Controllers
             else
             {
                 /*var categories = _db.tblorder.Include(x => x.prd).Include(x => x.Address).Include(x => x.user).OrderByDescending(x => x.orderid).ToList();
-*/                const int pagesize = 5;
+*/
+                const int pagesize = 5;
                 if (pagenumber < 1)
 
                     pagenumber = 1;
@@ -655,9 +666,9 @@ namespace E_Commerce.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("updatestatus")]
-        public async Task<IActionResult> updatestatus(int id,TBLorder ords)
+        public async Task<IActionResult> updatestatus(int id, TBLorder ords)
         {
-            var det=await _db.tblorder.FindAsync(id);
+            var det = await _db.tblorder.FindAsync(id);
             if (det != null)
             {
                 det.status = ords.status;
@@ -667,7 +678,7 @@ namespace E_Commerce.Areas.Admin.Controllers
             }
             else
             {
-                return RedirectToAction("manageorder","Admin",new {Areas="Admin" });
+                return RedirectToAction("manageorder", "Admin", new { Areas = "Admin" });
             }
 
         }

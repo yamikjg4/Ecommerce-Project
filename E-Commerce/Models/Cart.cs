@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace E_Commerce.Models
 {
@@ -10,8 +7,8 @@ namespace E_Commerce.Models
         public List<Product> cartproduct { get; set; }
         public List<int> cartprouctid { get; set; }
         public int proid { get; set; }
-       
+
         public int qty { get; set; }
-      
+
     }
 }

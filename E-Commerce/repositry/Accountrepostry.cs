@@ -1,9 +1,7 @@
 ﻿using E_Commerce.Models;
 using E_Commerce.services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +20,7 @@ namespace E_Commerce.repositry
 
         public Accountrepostry(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, Isendmail emailService,
-            IConfiguration configuration, RoleManager<IdentityRole> rolemanager,Eshopcontext db)
+            IConfiguration configuration, RoleManager<IdentityRole> rolemanager, Eshopcontext db)
         {
             _usermanager = userManager;
             _signInManager = signInManager;
@@ -34,26 +32,26 @@ namespace E_Commerce.repositry
         public ICollection<ApplicationUser> alluser()
         {
             var Users = _usermanager.Users.ToList();
-            return(from user in _db.Users
-                                  join userRole in _db.UserRoles
-                                  on user.Id equals userRole.UserId
-                                  join role in _db.Roles
-                                  on userRole.RoleId equals role.Id
-                                  where role.Name != "Admin"
-                                  select user).ToList();
+            return (from user in _db.Users
+                    join userRole in _db.UserRoles
+                    on user.Id equals userRole.UserId
+                    join role in _db.Roles
+                    on userRole.RoleId equals role.Id
+                    where role.Name != "Admin"
+                    select user).ToList();
 
             /*return _usermanager.Users.Where(x =>x.Id!=Convert.ToString(id)).ToList();*/
         }
         public int getcount()
         {
             var Users = _usermanager.Users.ToList();
-            var count=(from user in _db.Users
-                    join userRole in _db.UserRoles
-                    on user.Id equals userRole.UserId
-                    join role in _db.Roles
-                    on userRole.RoleId equals role.Id
-                    where role.Name != "Admin"
-                    select user).Count();
+            var count = (from user in _db.Users
+                         join userRole in _db.UserRoles
+                         on user.Id equals userRole.UserId
+                         join role in _db.Roles
+                         on userRole.RoleId equals role.Id
+                         where role.Name != "Admin"
+                         select user).Count();
             return count;
 
             /*return _usermanager.Users.Where(x =>x.Id!=Convert.ToString(id)).ToList();*/

@@ -124,6 +124,9 @@ namespace E_Commerce.Migrations
                     b.Property<int?>("categorycat_id")
                         .HasColumnType("int");
 
+                    b.Property<int>("prd_status")
+                        .HasColumnType("int");
+
                     b.Property<string>("product_desc")
                         .IsRequired()
                         .HasMaxLength(800)
@@ -136,10 +139,6 @@ namespace E_Commerce.Migrations
                     b.Property<int?>("product_qty")
                         .IsRequired()
                         .HasColumnType("int");
-
-                    b.Property<string>("status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(1)");
 
                     b.HasKey("product_id");
 
@@ -216,6 +215,9 @@ namespace E_Commerce.Migrations
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("name")
                         .IsRequired()

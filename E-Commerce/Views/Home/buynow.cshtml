@@ -13,12 +13,13 @@
                 <form asp-action="buynow" method="post">
                     @if (ViewBag.count > 0)
                     {
+                        <a asp-action="Create" asp-controller="Home" class="btn btn-success btn-sm" asp-route-returnUrl="@Context.Request.Path">Add Address</a>
                         @foreach (var item in ViewBag.Address)
                         {
                             <div class="card card-body" style="flex-direction:row;">
                                 <div>
                                     @*  @Html.RadioButtonFor(Model => Model.ad_id, new { @item.ad_id }, htmlAttributes: new { @class = "mr-2 my-auto" })@item.name,@item.Phone
-        <br>@item.Address,@item.pincode,,@item.City,@item.State*@
+                        <br>@item.Address,@item.pincode,,@item.City,@item.State*@
                                     <input asp-for="ad_id" type="radio" value="@item.ad_id" name="ad_id" /> @item.name,@item.Phone
                                     <br>@item.Address,@item.pincode,@item.City,@item.State
                                     <br><span asp-validation-for="ad_id" class="text-danger"></span>
@@ -28,10 +29,12 @@
                     }
                     else if (ViewBag.count == 0)
                     {
-                <div class="card card-body text-center">
-                    Please Add Address Right Now
-                    <a asp-action="Create" asp-controller="Home" class="btn btn-success btn-sm">Add Address</a>
-                </div>
+                        <div class="card card-body text-center justify-content-center">
+                            Please Add Address Right Now
+                            <div class="text-center">
+                                <a asp-action="Create" asp-controller="Home" class="btn btn-success w-25" asp-route-returnUrl="@Context.Request.Path">Add Address</a>
+                            </div>
+                        </div>
                     }
 
                     <div class="card-footer"><div align="right"><button type="submit" class="btn text-light" onclick="submitcustom(e)" style="background-color:orangered">Payment</button></div></div>

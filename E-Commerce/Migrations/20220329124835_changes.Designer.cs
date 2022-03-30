@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce.Migrations
 {
     [DbContext(typeof(Eshopcontext))]
-    [Migration("20220324065658_addeupdatedordertable")]
-    partial class addeupdatedordertable
+    [Migration("20220329124835_changes")]
+    partial class changes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -126,6 +126,9 @@ namespace E_Commerce.Migrations
                     b.Property<int?>("categorycat_id")
                         .HasColumnType("int");
 
+                    b.Property<int>("prd_status")
+                        .HasColumnType("int");
+
                     b.Property<string>("product_desc")
                         .IsRequired()
                         .HasMaxLength(800)
@@ -189,49 +192,6 @@ namespace E_Commerce.Migrations
                     b.ToTable("tblorder");
                 });
 
-            modelBuilder.Entity("E_Commerce.Models.TBLorderUpdated", b =>
-                {
-                    b.Property<int>("orderid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("ad_id")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("payment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("product_id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("qtys")
-                        .HasColumnType("int");
-
-                    b.Property<string>("status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("totalpay")
-                        .HasColumnType("int");
-
-                    b.HasKey("orderid");
-
-                    b.HasIndex("Id");
-
-                    b.HasIndex("ad_id");
-
-                    b.HasIndex("product_id");
-
-                    b.ToTable("tblorderupdated");
-                });
-
             modelBuilder.Entity("E_Commerce.Models.tblAddress", b =>
                 {
                     b.Property<int>("ad_id")
@@ -257,6 +217,9 @@ namespace E_Commerce.Migrations
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("name")
                         .IsRequired()
@@ -430,29 +393,6 @@ namespace E_Commerce.Migrations
 
                     b.HasOne("E_Commerce.Models.Product", "prd")
                         .WithMany("ord")
-                        .HasForeignKey("product_id");
-
-                    b.Navigation("Address");
-
-                    b.Navigation("prd");
-
-                    b.Navigation("user");
-                });
-
-            modelBuilder.Entity("E_Commerce.Models.TBLorderUpdated", b =>
-                {
-                    b.HasOne("E_Commerce.Models.ApplicationUser", "user")
-                        .WithMany()
-                        .HasForeignKey("Id");
-
-                    b.HasOne("E_Commerce.Models.tblAddress", "Address")
-                        .WithMany()
-                        .HasForeignKey("ad_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("E_Commerce.Models.Product", "prd")
-                        .WithMany()
                         .HasForeignKey("product_id");
 
                     b.Navigation("Address");

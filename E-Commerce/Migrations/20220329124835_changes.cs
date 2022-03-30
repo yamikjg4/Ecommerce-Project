@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace E_Commerce.Migrations
 {
-    public partial class init : Migration
+    public partial class changes : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -179,6 +179,7 @@ namespace E_Commerce.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Id = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     userId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -204,6 +205,7 @@ namespace E_Commerce.Migrations
                     product_desc = table.Column<string>(type: "nvarchar(800)", maxLength: 800, nullable: false),
                     product_qty = table.Column<int>(type: "int", nullable: false),
                     ImageFile = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    prd_status = table.Column<int>(type: "int", nullable: false),
                     categorycat_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -214,6 +216,44 @@ namespace E_Commerce.Migrations
                         column: x => x.categorycat_id,
                         principalTable: "tblcategory",
                         principalColumn: "cat_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblorder",
+                columns: table => new
+                {
+                    orderid = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ad_id = table.Column<int>(type: "int", nullable: false),
+                    product_id = table.Column<int>(type: "int", nullable: true),
+                    qtys = table.Column<int>(type: "int", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    totalpay = table.Column<int>(type: "int", nullable: false),
+                    status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    payment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblorder", x => x.orderid);
+                    table.ForeignKey(
+                        name: "FK_tblorder_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_tblorder_tblAddresses_ad_id",
+                        column: x => x.ad_id,
+                        principalTable: "tblAddresses",
+                        principalColumn: "ad_id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblorder_tblproduct_product_id",
+                        column: x => x.product_id,
+                        principalTable: "tblproduct",
+                        principalColumn: "product_id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -262,6 +302,21 @@ namespace E_Commerce.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tblorder_ad_id",
+                table: "tblorder",
+                column: "ad_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblorder_Id",
+                table: "tblorder",
+                column: "Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblorder_product_id",
+                table: "tblorder",
+                column: "product_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tblproduct_categorycat_id",
                 table: "tblproduct",
                 column: "categorycat_id");
@@ -285,13 +340,16 @@ namespace E_Commerce.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "tblorder");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
                 name: "tblAddresses");
 
             migrationBuilder.DropTable(
                 name: "tblproduct");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

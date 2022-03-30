@@ -33,12 +33,9 @@ namespace E_Commerce.Models
         [Display(Name = "Product Image")]
         [Required]
         public string ImageFile { get; set; }
-        public char status { get; set; } = 'A';
+        public int prd_status { get; set; } = 1;
         public Category category { get; set; }
-        public virtual ICollection <TBLorder> ord { get; set; }
-        internal List<int> ToList()
-        {
-            throw new NotImplementedException();
-        }
+        public virtual ICollection<TBLorder> ord { get; set; }
+        
     }
 }
