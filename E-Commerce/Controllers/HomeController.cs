@@ -602,6 +602,7 @@ namespace E_Commerce.Controllers
             return View();
             /*return RedirectToAction("cart");*/
         }
+        [Authorize(Roles ="Customer")]
         public async Task<IActionResult> orders(string id, int pagenumber = 1, string search = "")
         {
             if (id == null)

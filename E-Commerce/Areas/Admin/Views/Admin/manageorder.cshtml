@@ -139,7 +139,14 @@
                                 }
                             </td>
                             <td>
+                                @if (item.status == "Deliver" || item.status == "Cancel")
+                                {
+                                   <Span class="text-danger">Can't Update Status</Span>
+                                }
+                                else
+                                {
                                 <button type="submit" class="bg-primary" onclick="submitCustom(e)"><i class='fa fa-edit'></i></button>
+                                }
                             </td>
                             </form>
                         </tr>
