@@ -28,7 +28,7 @@ namespace E_Commerce
         {
             services.AddControllersWithViews();
             services.AddDbContext<Eshopcontext>(option => option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            /*services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();*/
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<Eshopcontext>().AddDefaultTokenProviders();
             services.Configure<SMTPConfigModel>(Configuration.GetSection("SMTPConfig"));
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -40,6 +40,7 @@ namespace E_Commerce
             services.Configure<IdentityOptions>(option =>
             {
                 option.Password.RequiredLength = 9;
+              /*  option.Password.RequiredLength = 12;*/
                 option.Password.RequiredUniqueChars = 1;
                 option.Password.RequireUppercase = true;
                 option.Password.RequireLowercase = true;

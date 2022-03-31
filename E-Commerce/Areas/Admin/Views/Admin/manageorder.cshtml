@@ -84,6 +84,9 @@
                             @Html.DisplayNameFor(model => model.qtys)
                         </th>
                         <th>
+                            Order Date
+                            </th>
+                        <th>
                             @Html.DisplayNameFor(model => model.status)
                         </th>
                         <th>
@@ -117,6 +120,9 @@
                             <td>
                                 @*  @Html.DisplayFor(modelItem => item.products.product_desc)*@
                                 @Html.Raw(item.qtys)
+                            </td>
+                            <td style="width:100%;">
+                                @item.date.ToString("dd/MM/yyyy")
                             </td>
                             <form asp-action="updatestatus" asp-controller="Admin" asp-area="Admin" asp-route-id="@item.orderid" method="post">
                             <td>
