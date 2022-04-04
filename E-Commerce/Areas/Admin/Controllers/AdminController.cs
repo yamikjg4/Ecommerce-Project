@@ -39,7 +39,7 @@ namespace E_Commerce.Areas.Admin.Controllers
         {
             TempData["getid"] = _usermanager.GetUserId(HttpContext.User);
             var id = TempData["getid"];
-            ViewBag.q2 = _db.tblproduct.Where(x=>x.prd_status==1).Count();
+            ViewBag.q2 = _db.tblproduct.Where(x => x.prd_status == 1).Count();
             ViewBag.q1 = _db.tblcategory.Count();
             ViewBag.q3 = _accountrepostry.getcount();
             ViewBag.q4 = _db.tblorder.Where(x => x.status == "Deliver").Sum(x => x.totalpay);
@@ -111,7 +111,7 @@ namespace E_Commerce.Areas.Admin.Controllers
             var product = from e1 in categories
                           join e2 in products on e1.cat_id equals e2.cat_id into tabel1
                           from e2 in tabel1.ToList()
-                          where e2.prd_status==1
+                          where e2.prd_status == 1
                           orderby e2.product_id
                           select new Category_Product
                           {
@@ -126,7 +126,7 @@ namespace E_Commerce.Areas.Admin.Controllers
 
                 var prd = from e1 in categories
                           join e2 in products on e1.cat_id equals e2.cat_id into tabel1
-                          from e2 in tabel1.Where(x => e1.category_name == search || x.Product_name.Contains(search) && x.prd_status==1)
+                          from e2 in tabel1.Where(x => e1.category_name == search || x.Product_name.Contains(search) && x.prd_status == 1)
                           .ToList()
 
                           select new Category_Product
@@ -486,26 +486,30 @@ namespace E_Commerce.Areas.Admin.Controllers
             /* return View(user);*/
         }
         [Route("DeleteUser")]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser(string id,string active,string delete)
         {
             var res = await _usermanager.FindByIdAsync(id);
-            if (res != null)
+            if (active != null)
             {
-                var resp = await _usermanager.DeleteAsync(res);
-                if (resp.Succeeded)
+
+                res.EmailConfirmed = true;
+                var ress=await _usermanager.UpdateAsync(res);
+                if (ress.Succeeded)
                 {
                     return RedirectToAction("ViewUser", "Admin", new { area = "Admin" });
                 }
-
             }
-            else
+            else if(delete!=null)
             {
-                ViewBag.Message = "Something Wrong,Please Try Again letter";
-                return RedirectToAction("ViewUser", "Admin", new { area = "Admin" });
+                res.EmailConfirmed = false;
+                var ress=await _usermanager.UpdateAsync(res);
+                if (ress.Succeeded)
+                {
+                    return RedirectToAction("ViewUser", "Admin", new { area = "Admin" });
+                }
             }
-
-
             return RedirectToAction("ViewUser", "Admin", new { area = "Admin" });
+            
         }
 
 
@@ -682,5 +686,39 @@ namespace E_Commerce.Areas.Admin.Controllers
             }
 
         }
+        [HttpGet]
+        [Route("changepassword")]
+        public IActionResult changepassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [Route("ChangePassword")]
+        public async Task<IActionResult> changepassword(ChangePasswordModel change)
+        {
+            if (ModelState.IsValid)
+            {
+                string id=_usermanager.GetUserId(HttpContext.User);
+                var user = await _usermanager.FindByIdAsync(id.Trim());
+                var res = await _usermanager.ChangePasswordAsync(user, change.Currentpassword, change.Newpassword);
+                if (res.Succeeded)
+                {
+                    ModelState.Clear();
+                    ViewBag.status = true;
+                    TempData["Password"] = "Password Update Succesfully";
+                    TempData.Keep();
+                    return View();
+                }
+                TempData["error"] = "Password Update Fail";
+                TempData.Keep();
+                foreach (var result in res.Errors)
+                {
+                    ModelState.AddModelError("", result.Description);
+                }
+            }
+
+            return View(change);
+        }
     }
 }
+

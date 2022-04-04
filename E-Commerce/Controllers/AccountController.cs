@@ -20,12 +20,12 @@ namespace E_Commerce.Controllers
 
         }
 
-        [Route("Account/Register")]
+        [Route("singup")]
         public IActionResult singup()
         {
             return View();
         }
-        [Route("Account/Register")]
+        [Route("singup")]
         [HttpPost]
         public async Task<IActionResult> singup(singupmodel singup)
         {
@@ -64,7 +64,7 @@ namespace E_Commerce.Controllers
 
             return View(singup);
         }
-        [Route("Account/Login")]
+        [Route("Login")]
         public IActionResult login()
         {
             if (_signInManager.IsSignedIn(User))
@@ -77,10 +77,19 @@ namespace E_Commerce.Controllers
                 {
                     return Redirect("~/Home/Index/");
                 }
+                else
+                {
+                    return View();
+                }
             }
-            return View();
+            else
+            {
+                return View();
+            }
+
+
         }
-        [Route("Account/Login")]
+        [Route("Login")]
         [HttpPost]
         public async Task<IActionResult> login(singinmodel signInModel, string returnUrl)
         {

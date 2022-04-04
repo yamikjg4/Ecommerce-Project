@@ -68,7 +68,8 @@ namespace E_Commerce.repositry
                 PhoneNumber = singup.Phone,
                 fname = singup.Name,
                 Email = singup.email,
-                UserName = singup.email
+                UserName = singup.email,
+                
 
             };
             var result = await _usermanager.CreateAsync(User, singup.Password);

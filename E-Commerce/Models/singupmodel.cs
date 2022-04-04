@@ -21,5 +21,10 @@ namespace E_Commerce.Models
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm Password")]
+        [Compare("Password")]
+        public string confirm { get; set; }
     }
 }

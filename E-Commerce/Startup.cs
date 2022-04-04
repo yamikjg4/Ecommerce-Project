@@ -4,7 +4,6 @@ using E_Commerce.repositry;
 using E_Commerce.services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -40,7 +39,7 @@ namespace E_Commerce
             services.Configure<IdentityOptions>(option =>
             {
                 option.Password.RequiredLength = 9;
-              /*  option.Password.RequiredLength = 12;*/
+                /*  option.Password.RequiredLength = 12;*/
                 option.Password.RequiredUniqueChars = 1;
                 option.Password.RequireUppercase = true;
                 option.Password.RequireLowercase = true;
@@ -52,7 +51,7 @@ namespace E_Commerce
             });
             services.ConfigureApplicationCookie(config =>
             {
-                config.LoginPath = "/Account/Login/";
+                config.LoginPath = "/Login/";
                 config.AccessDeniedPath = "/Account/AccessDenied";
             }
             );

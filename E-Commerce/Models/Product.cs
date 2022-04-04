@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace E_Commerce.Models
@@ -36,6 +35,6 @@ namespace E_Commerce.Models
         public int prd_status { get; set; } = 1;
         public Category category { get; set; }
         public virtual ICollection<TBLorder> ord { get; set; }
-        
+
     }
 }

@@ -51,7 +51,7 @@ namespace E_Commerce.Controllers
                 var product = from e1 in categories
                               join e2 in products on e1.cat_id equals e2.cat_id into tabel1
                               from e2 in tabel1.ToList()
-                              where e2.prd_status==1
+                              where e2.prd_status == 1
                               orderby e2.product_id
                               select new Category_Product
                               {
@@ -66,7 +66,7 @@ namespace E_Commerce.Controllers
 
                     var prd = from e1 in categories
                               join e2 in products on e1.cat_id equals e2.cat_id into tabel1
-                              from e2 in tabel1.Where(x => e1.category_name == search || x.Product_name.Contains(search) && x.prd_status==1)
+                              from e2 in tabel1.Where(x => e1.category_name == search || x.Product_name.Contains(search) && x.prd_status == 1)
                               .ToList()
                               select new Category_Product
                               {
@@ -132,7 +132,7 @@ namespace E_Commerce.Controllers
         {
             var res = await _prd.getdetail(id);
 
-            ViewBag.prd = await _db.tblproduct.Where(x => x.product_id != id && x.cat_id==catid && x.prd_status==1).ToListAsync();
+            ViewBag.prd = await _db.tblproduct.Where(x => x.product_id != id && x.cat_id == catid && x.prd_status == 1).ToListAsync();
             var cat = await _db.tblcategory.Where(x => x.cat_id == catid).FirstOrDefaultAsync();
             ViewBag.catid = cat.category_name;
 
@@ -246,7 +246,7 @@ namespace E_Commerce.Controllers
         public IActionResult ManageAddress()
         {
             var user = _usermanager.GetUserId(HttpContext.User);
-            return View(_db.tblAddresses.Where(x => x.Id == user && x.Status==1).ToList());
+            return View(_db.tblAddresses.Where(x => x.Id == user && x.Status == 1).ToList());
         }
         public IActionResult Create(string returnUrl)
         {
@@ -319,7 +319,7 @@ namespace E_Commerce.Controllers
         }
         public async Task<IActionResult> DeleteAddress(int id)
         {
-            var check = await _db.tblAddresses.Where(x=>x.ad_id==id).FirstOrDefaultAsync();
+            var check = await _db.tblAddresses.Where(x => x.ad_id == id).FirstOrDefaultAsync();
             /*  _db.tblAddresses.Remove(await _db.tblAddresses.FindAsync(id));*/
             check.ad_id = check.ad_id;
             check.Status = 0;
@@ -407,7 +407,7 @@ namespace E_Commerce.Controllers
                 var userid = _usermanager.GetUserId(HttpContext.User);
                 /*  TempData["getid"] = _usermanager.GetUserId(HttpContext.User);*/
 
-                ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status==1).ToList();
+                ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status == 1).ToList();
 
 
                 ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status == 1).Count();
@@ -447,11 +447,11 @@ namespace E_Commerce.Controllers
                 cartmodel.cartproduct = GetProducts(cartmodel.cartprouctid);
                 ViewBag.Sum = cartmodel.cartproduct.Sum(x => x.product_price * cartmodel.cartprouctid.Where(productid => productid == x.product_id).Count());
                 var userid = _usermanager.GetUserId(HttpContext.User);
-                ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status==1).ToList();
+                ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status == 1).ToList();
 
 
 
-                ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status==1).Count();
+                ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status == 1).Count();
                 /*  TempData["getid"] = _usermanager.GetUserId(HttpContext.User);*/
                 if (ModelState.IsValid)
                 {
@@ -533,8 +533,8 @@ namespace E_Commerce.Controllers
             TempData.Keep();
             var userid = _usermanager.GetUserId(HttpContext.User);
 
-            ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status==1).ToList();
-            ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status==1).Count();
+            ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status == 1).ToList();
+            ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status == 1).Count();
 
             var product = await _db.tblproduct.FindAsync(id);
             ViewBag.price = product.product_price;
@@ -594,15 +594,15 @@ namespace E_Commerce.Controllers
             }
             /*  var userid = _usermanager.GetUserId(HttpContext.User);*/
             var products = await _db.tblproduct.FindAsync(id);
-            ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status==1).ToList();
-            ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status==1).Count();
+            ViewBag.Address = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status == 1).ToList();
+            ViewBag.count = _db.tblAddresses.Where(x => x.Id == Convert.ToString(userid) && x.Status == 1).Count();
 
             /* var product = await _db.tblproduct.FindAsync(TempData["id"]);*/
             ViewBag.price = products.product_price;
             return View();
             /*return RedirectToAction("cart");*/
         }
-        [Authorize(Roles ="Customer")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> orders(string id, int pagenumber = 1, string search = "")
         {
             if (id == null)
@@ -681,6 +681,7 @@ namespace E_Commerce.Controllers
 
             return Json(product);
         }
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> getdetails(int id)
         {
 

@@ -90,13 +90,19 @@
                                    <td>
                                        <form asp-area="Admin" asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@item.Id" method="post">
 
+                                           @if (item.EmailConfirmed)
+                                           {
+                                               <label for="trash"><img src="~/Image/remove.png" style="width:25px;" /></label>
+                                               <input type="submit" value="Deactive"  id="trash" name="delete" class="btn btn-link border-0 d-inline" onclick="return functionConfirm(this)"  />
 
-                                           <button type="submit" class="btn btn-link border-0 d-inline" onclick="return functionConfirm(this)">
-                                               <span class="text-danger">
-                                                   <i class="fa fa-trash"></i>
-                                               </span>
-                                           </button>
+                                           }
+                                           else 
+                                           {
+                                               <label for="active"><img src="~/Image/correct.png" style="width:25px;" /></label>
+                                               <input type="submit" value="Active" id="active" name="active" class="btn btn-link border-0 d-inline" onclick="return functionConfirm(this)" />
 
+
+                                           }
                                        </form>
                                    </td>
                                </tr>
@@ -154,7 +160,7 @@
     </script>
 }
 
-<script type="text/javascript">
+@*<script type="text/javascript">
     function functionConfirm(event) {
         console.log('click');
 
@@ -179,7 +185,7 @@
             });
         return false;
     }
-</script>
+</script>*@
 @if (ViewBag.alert != null)
 {
     <script>
