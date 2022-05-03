@@ -46,7 +46,7 @@ namespace E_Commerce
                 option.Password.RequireDigit = true;
                 option.Password.RequireNonAlphanumeric = true;
                 option.SignIn.RequireConfirmedEmail = true;
-                option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromHours(3);
+                option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(20);
                 option.Lockout.MaxFailedAccessAttempts = 5;
             });
             services.ConfigureApplicationCookie(config =>

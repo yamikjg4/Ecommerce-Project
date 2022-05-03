@@ -128,9 +128,9 @@ namespace E_Commerce.Controllers
 
                 else if (result.IsLockedOut)
                 {
-                    ModelState.AddModelError("", "Account is Block Try after 2Hr");
+                    ModelState.AddModelError("", "Account is Block Try after 20Min");
                     ViewBag.status = false;
-                    ViewBag.alertmesaage = "Your Account Is Lock Try Again 2Hr";
+                    ViewBag.alertmesaage = "Your Account Is Lock Try Again 20Min";
                 }
                 else
                 {

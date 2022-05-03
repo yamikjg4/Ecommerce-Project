@@ -67,17 +67,17 @@
     display: none;
 }
 
-body::before{
-    display:block;
-    content:'';
-    height:90px;
+body::before {
+    display: block;
+    content: '';
+    height: 87px;
 }
 /*body {
     min-height: 100vh;
 }*/
 @media screen and (max-width: 480px) and (min-width:280px) {
-   
-   /* #img1{
+
+    /* #img1{
         height:200px;
         width:280px;
     }
@@ -95,6 +95,7 @@ body::before{
     z-index: 999 !important;
     padding-top: 10px !important;
 }
-.navbar{
-    z-index:10!important;
+
+.navbar {
+    z-index: 10 !important;
 }
